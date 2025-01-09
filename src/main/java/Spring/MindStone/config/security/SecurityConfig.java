@@ -22,18 +22,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("")
-                        .defaultSuccessUrl("", true)
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .logout((logout) -> logout
-                        .logoutUrl("")
-                        .logoutSuccessUrl("")
-                        .permitAll()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("")
-                        .defaultSuccessUrl("", true)
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
                         .permitAll()
                 );
 
