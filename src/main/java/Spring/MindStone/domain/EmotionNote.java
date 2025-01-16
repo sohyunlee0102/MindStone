@@ -2,6 +2,7 @@ package Spring.MindStone.domain;
 
 
 import Spring.MindStone.domain.common.BaseEntity;
+import Spring.MindStone.domain.enums.EmotionList;
 import Spring.MindStone.domain.enums.Job;
 import Spring.MindStone.domain.enums.MBTI;
 import Spring.MindStone.domain.enums.Status;
@@ -29,9 +30,12 @@ public class EmotionNote extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false) // 회원 ID와 연관 관계
     private MemberInfo memberInfo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "emotion_id", nullable = false) // 감정 ID와 연관 관계
-    private Emotion emotion;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true, length = 10)
+    private EmotionList emotion; // 감정 (Enum)
+
+    /*@Column(nullable = false)
+    private Boolean emotionValence; //+감정인지 -감정인지*/
 
     @Column(nullable = false)
     private Integer emotionFigure; // 감정 수치

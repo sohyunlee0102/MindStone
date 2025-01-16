@@ -31,6 +31,6 @@ public class HabitHistory extends BaseEntity {
     private Habit habit; // 회원 ID (FK, Member와 관계 설정)
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 15, columnDefinition = "VARCHAR(15) DEFAULT 'ACTIVE'")
-    private HabitStatus status; // 계정 상태 (Enum)
+    @Column(nullable = false, length = 15)
+    private HabitStatus status; // 습관 상태 (Enum)
 }

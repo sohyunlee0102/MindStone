@@ -1,5 +1,6 @@
 package Spring.MindStone.domain;
 
+import Spring.MindStone.domain.common.BaseEntity;
 import Spring.MindStone.domain.id.DailyEmotionStatisticId;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,17 +12,21 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@IdClass(DailyEmotionStatisticId.class) // 복합 키 클래스 매핑
-public class DailyEmotionStatistic {
+/*@IdClass(DailyEmotionStatisticId.class) // 복합 키 클래스 매핑*/
+public class DailyEmotionStatistic extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id; // 기본 키
+
+    //@Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false) // MemberInfo와 연관 관계
     private MemberInfo memberInfo;
 
-    @Id
+    /*@Id
     @Column(nullable = false)
-    private LocalDate date; // 생성 날짜 (복합 키)
+    private LocalDate date; // 생성 날짜 (복합 키)*/
 
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private Integer angerFigure; // 분노 수치

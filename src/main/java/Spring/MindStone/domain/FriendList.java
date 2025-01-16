@@ -1,5 +1,6 @@
 package Spring.MindStone.domain;
 
+import Spring.MindStone.domain.enums.FriendStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -27,6 +28,7 @@ public class FriendList {
     @JoinColumn(name = "friend_id", nullable = true)
     private MemberInfo friend; // 친구 (Member 테이블의 ID 참조)
 
-    @Column(nullable = true)
-    private Boolean isBan; // 차단 여부 (true: 차단, false: 차단 아님)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 15)
+    private FriendStatus friendStatus; // 친구 추가 상태(친추됨, 차단됨, 요청됨, 요청이 옴)
 }

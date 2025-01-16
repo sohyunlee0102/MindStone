@@ -34,6 +34,6 @@ public class MemberInterest extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String action; // 행동 (텍스트)
 
-    @Column(nullable = false)
-    private Integer actionNum; // 행동 횟수
+    @Column(nullable = false,columnDefinition = "INTEGER DEFAULT 0")
+    private Integer actionNum = 0; // 행동 횟수(회원이 얼마나 이 행동을 택했는지)
 }

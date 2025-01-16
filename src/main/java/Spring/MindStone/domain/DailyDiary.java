@@ -28,7 +28,7 @@ public class DailyDiary extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private MemberInfo member; // 본인 (Member 테이블의 ID 참조)
+    private MemberInfo memberInfo; // 본인 (Member 테이블의 ID 참조)
 
     @Column(nullable = false, length = 100)
     private String impressiveThing; // 인상 깊은 일
