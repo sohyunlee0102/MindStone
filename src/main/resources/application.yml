@@ -1,8 +1,13 @@
 spring:
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/angela
+#    username: root
+#    password: Leesohyun0102$
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   datasource:
-    url: jdbc:mysql://localhost:3306/angela
+    url: jdbc:mysql://localhost:3306/study
     username: root
-    password: Leesohyun0102$
+    password: Felix1924!
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
@@ -17,3 +22,6 @@ spring:
         hbm2ddl:
           auto: create
         default_batch_fetch_size: 1000
+  openai:
+    model: gpt-3.5-turbo
+    secret-key: ${OPENAI_KEY}

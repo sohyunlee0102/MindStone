@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,4 +43,10 @@ public class EmotionNote extends BaseEntity {
 
     @Column(nullable = false, length = 200)
     private String content; // 상세 내용 (왜 기쁘거나 슬펐는지)
+
+    @Override
+    public String toString() {
+        return getCreatedAt().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+        + "-" + "Action : " + content + ",Emotion :" + emotion + ",Emotion Figure : " + emotionFigure;
+    }
 }
