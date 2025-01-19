@@ -26,7 +26,7 @@ public class MemberInterest extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private MemberInfo member; // 회원 ID (FK, Member와 관계 설정)
+    private MemberInfo memberInfo; // 회원 ID (FK, Member와 관계 설정)
 
     @Column(nullable = false)
     private Integer actionID; // 행동 번호(취미, 특기, 스트레스 풀이)
