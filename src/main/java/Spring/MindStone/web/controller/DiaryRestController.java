@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/diary")
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class DiaryRestController {
     @GetMapping("/create")
     public ApiResponse<String> createAutoDiary(@RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest){
         try {
-            String result = diaryCommandService.createDiary(diaryRequest.getId(), diaryRequest.getBodyPart());
+            String result = diaryCommandService.createDiary(diaryRequest.getId(), diaryRequest.getBodyPart(), diaryRequest.getDate());
             return ApiResponse.onSuccess(result);
         } catch (Exception e) {
             return ApiResponse.onFailure("GPT5001", "GPT에러 오류: " + e.getMessage(), null);
@@ -32,10 +34,10 @@ public class DiaryRestController {
     public ApiResponse<String> createAutoDiaryHard(){
         try {
             String bodyPart = "08:00 AM - Action: 아침 운동, Emotion: 기쁨, Emotion Score: 100\n10:00 AM - Action: 회의 참석, Emotion: 우울, Emotion Score: 300\n12:30 PM - Action: 점심 식사, Emotion: 활발, Emotion Score: 200";
-            String result = diaryCommandService.createDiary(1L, bodyPart);
+            String result = diaryCommandService.createDiaryHard(1L, bodyPart, LocalDate.now());
             return ApiResponse.onSuccess(result);
         } catch (Exception e) {
-            return ApiResponse.onFailure("GPT5001", "GPT에러 오류: " + e.getMessage(), null);
+            return ApiResponse.onSuccess(e.getMessage());
         }
     }
 }
