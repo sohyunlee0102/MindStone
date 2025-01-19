@@ -13,3 +13,4 @@ public class DiaryRequestDTO {
         private String bodyPart;
     }
 }
+
