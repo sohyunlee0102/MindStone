@@ -1,20 +1,11 @@
-package Spring.MindStone.domain;
+package Spring.MindStone.domain.emotion;
 
 
 import Spring.MindStone.domain.common.BaseEntity;
 import Spring.MindStone.domain.enums.EmotionList;
-import Spring.MindStone.domain.enums.Job;
-import Spring.MindStone.domain.enums.MBTI;
-import Spring.MindStone.domain.enums.Status;
+import Spring.MindStone.domain.member.MemberInfo;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter

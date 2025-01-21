@@ -1,6 +1,7 @@
-package Spring.MindStone.domain;
+package Spring.MindStone.domain.friend;
 
 import Spring.MindStone.domain.enums.FriendStatus;
+import Spring.MindStone.domain.member.MemberInfo;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
