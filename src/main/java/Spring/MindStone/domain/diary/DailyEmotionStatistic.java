@@ -1,11 +1,9 @@
-package Spring.MindStone.domain;
+package Spring.MindStone.domain.diary;
 
+import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.domain.common.BaseEntity;
-import Spring.MindStone.domain.id.DailyEmotionStatisticId;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Entity
 @Getter

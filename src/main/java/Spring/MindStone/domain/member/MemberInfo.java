@@ -1,9 +1,12 @@
-package Spring.MindStone.domain;
+package Spring.MindStone.domain.member;
 
+import Spring.MindStone.domain.emotion.EmotionNote;
 import Spring.MindStone.domain.common.BaseEntity;
+import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.domain.enums.Job;
 import Spring.MindStone.domain.enums.MBTI;
 import Spring.MindStone.domain.enums.Status;
+import Spring.MindStone.domain.habit.Habit;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
