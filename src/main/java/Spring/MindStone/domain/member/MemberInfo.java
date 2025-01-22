@@ -7,6 +7,7 @@ import Spring.MindStone.domain.enums.Job;
 import Spring.MindStone.domain.enums.MBTI;
 import Spring.MindStone.domain.enums.Status;
 import Spring.MindStone.domain.habit.Habit;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,6 +24,8 @@ import java.util.List;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+
+@Schema(description = "회원 정보 관리 엔티티")
 public class MemberInfo extends BaseEntity {
 
     @Id
