@@ -3,6 +3,7 @@ package Spring.MindStone.domain;
 import Spring.MindStone.domain.common.BaseEntity;
 import Spring.MindStone.domain.enums.Job;
 import Spring.MindStone.domain.enums.MBTI;
+import Spring.MindStone.domain.enums.Role;
 import Spring.MindStone.domain.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @DynamicUpdate
 @DynamicInsert
@@ -59,6 +61,10 @@ public class MemberInfo extends BaseEntity {
     @Column(nullable = false)
     private Boolean marketingAgree; // 서비스 동의 여부
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 15, columnDefinition = "VARCHAR(15) DEFAULT 'USER'")
+    private Role role;
+
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberInterest> memberInterestList = new ArrayList<>();
 
@@ -74,4 +80,5 @@ public class MemberInfo extends BaseEntity {
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmotionNote> emotionNoteList = new ArrayList<>();
 
+    public void encodePassword(String password) { this.password = password; }
 }
