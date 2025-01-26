@@ -2,6 +2,7 @@ package Spring.MindStone.service.DiaryService;
 
 import Spring.MindStone.domain.EmotionNote;
 import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryServiceImpl;
+import Spring.MindStone.web.dto.DiaryResponseDTO;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
@@ -32,6 +33,18 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     private final String ASSISTANT = ChatMessageRole.ASSISTANT.value();
     private final String SYSTEM = ChatMessageRole.SYSTEM.value();
 
+    private final List<ChatMessage> systemPrompt = List.of(
+            new ChatMessage(SYSTEM, "You are an emotional diary generator that writes daily reflections in Korean."),
+            new ChatMessage(SYSTEM, "1. The input consists of daily activities described with action, emotion, and emotionScore (without time)."),
+            new ChatMessage(SYSTEM, "2. Arrange the activities in a natural order to ensure the diary feels coherent and follows a logical flow of events."),
+            new ChatMessage(SYSTEM, "3. Use casual and relatable language, avoiding formal speech. Write as if the user is talking to themselves"),
+            new ChatMessage(SYSTEM, "4. Highlight the user's emotional transitions throughout the day and summarize the overall sentiment at the end."),
+            new ChatMessage(SYSTEM, "5. Keep the diary concise, engaging, and authentic to the user's experiences."),
+            new ChatMessage(SYSTEM, "6. If no input is provided or the input is not understandable, write a reflection with the phrase like '이유 없이' to describe the emotion."),
+            new ChatMessage(SYSTEM, "7. If asked to regenerate, rewrite the diary with a different perspective or style while maintaining coherence and emotional flow."),
+            new ChatMessage(SYSTEM, "The diary must be written in Korean.")
+    );
+
     @PostConstruct
     public void init() {
         openAiService = new OpenAiService(SECRET_KEY, Duration.ofSeconds(45)); // 45초 내에 응답 안올 시 예외 던짐
@@ -39,9 +52,10 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     }
 
     @Override
-    public String createDiary(Long id, String bodyPart, LocalDate date) {
+    public DiaryResponseDTO.DiaryCreationResponseDTO createDiary(Long id, LocalDate date) {
         //1. EmotionNoteService에서 멤버의 하루 일들을 갖고옴.
-        List<EmotionNote> emotionNoteList =emotionNoteServiceImpl.getNotesByIdAndDate(id, date);
+
+        List<EmotionNote> emotionNoteList = emotionNoteServiceImpl.getNotesByIdAndDate(id, date);
 
         //2. 받아온 리스트를 합침.
         String result = emotionNoteList.stream()
@@ -49,58 +63,38 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
                 .collect(Collectors.joining("\n"));
 
         //3.result를 프롬프트와 함께 제작
-        List<ChatMessage> systemPrompt = List.of(
-                new ChatMessage(SYSTEM, "You are an emotional diary generator that writes daily reflections in Korean."),
-                new ChatMessage(SYSTEM, "1. The input consists of daily activities described with time, action, emotion, and emotionScore."),
-                new ChatMessage(SYSTEM, "2. The emotionScore ranges from 50 to 500, in increments of 50. Instead of showing the numeric score, describe the intensity of emotions qualitatively, ranging from 'very little' to 'very much.'"),
-                new ChatMessage(SYSTEM, "3. Arrange the activities in chronological order to ensure the diary follows the order of events during the day."),
-                new ChatMessage(SYSTEM, "4. Use natural and empathetic language to make the diary feel personal and relatable."),
-                new ChatMessage(SYSTEM, "5. Highlight the user's emotional transitions throughout the day and summarize the overall sentiment at the end."),
-                new ChatMessage(SYSTEM, "6. Keep the diary concise and engaging, ensuring it feels authentic to the user's experiences."),
-                new ChatMessage(SYSTEM, "The diary must be written in Korean.")
-        );
         List<ChatMessage> chatPrompt = List.of(
-                new ChatMessage(USER, "08:00 AM - Action: 아침 운동, Emotion: 기쁨, Emotion Figure: 50"),
-                new ChatMessage(ASSISTANT, "아침 8시에 일어나서 아침 운동을 하니 살짝 기뻤다."),
-                new ChatMessage(USER, "10:00 AM - Action: 회의 참석, Emotion: 스트레스, Emotion Figure: 300"),
-                new ChatMessage(ASSISTANT, "10시에는 회의 참석을 하니 스트레스가 좀 컸던거 같다."),
-                new ChatMessage(USER, "01:00 PM - Action: 점심 식사, Emotion: 만족, Emotion Figure: 150"),
-                new ChatMessage(ASSISTANT, "1시에 점심 식사를 하였는데 만족스러웠다."),
-                new ChatMessage(USER, "03:00 PM - Action: 업무 마감, Emotion: 성취감, Emotion Figure: 450"),
-                new ChatMessage(ASSISTANT, "3시에 업무 마감을 하니 매우 성취감이 컸다."),
-                new ChatMessage(USER, bodyPart)
+                new ChatMessage(USER, "아침 운동, 기쁨, 50"),
+                new ChatMessage(ASSISTANT, "아침에 일어나서 운동을 하니깐 그래도 상쾌한 기분이었다."),
+                new ChatMessage(USER, "회의 참석, 분노, 300"),
+                new ChatMessage(ASSISTANT, "회의 참석을 하니 아침 운동의 기쁨이 사라질정도로 화났다."),
+                new ChatMessage(USER, "점심 식사, 만족, 150"),
+                new ChatMessage(ASSISTANT, "그래도 점심 식사를 하니 꽤나 만족스러웠다."),
+                new ChatMessage(USER, "업무 마감, 성취감, 450"),
+                new ChatMessage(ASSISTANT, "업무 마감까지 하니 매우 성취감이 컸다."),
+                new ChatMessage(USER, "ㅇㅁㄴㅇ, 분노, 50"),
+                new ChatMessage(ASSISTANT, "이유 없이 분노가 좀 차올랐다."),
+                new ChatMessage(USER, result)
         );
 
+
+
         //4. 프롬프트와 생성하는 함수와 GPT API를 실행
-        return getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
+        String content = getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
+        return new DiaryResponseDTO.DiaryCreationResponseDTO(content, result);
     }
 
-    public String createDiaryHard(Long id,String bodyPart,LocalDate date) {
-
-        List<ChatMessage> systemPrompt = List.of(
-                new ChatMessage(SYSTEM, "You are an emotional diary generator that writes daily reflections in Korean."),
-                new ChatMessage(SYSTEM, "1. The input consists of daily activities described with time, action, emotion, and emotionScore."),
-                new ChatMessage(SYSTEM, "2. The emotionScore ranges from 50 to 500, in increments of 50. Instead of showing the numeric score, describe the intensity of emotions qualitatively, ranging from 'very little' to 'very much.'"),
-                new ChatMessage(SYSTEM, "3. Arrange the activities in chronological order to ensure the diary follows the order of events during the day."),
-                new ChatMessage(SYSTEM, "4. Use natural and empathetic language to make the diary feel personal and relatable."),
-                new ChatMessage(SYSTEM, "5. Highlight the user's emotional transitions throughout the day and summarize the overall sentiment at the end."),
-                new ChatMessage(SYSTEM, "6. Keep the diary concise and engaging, ensuring it feels authentic to the user's experiences."),
-                new ChatMessage(SYSTEM, "The diary must be written in Korean.")
-        );
+    @Override
+    public DiaryResponseDTO.DiaryCreationResponseDTO createDiaryRe(Long id, String bodyPart, LocalDate date){
         List<ChatMessage> chatPrompt = List.of(
-                new ChatMessage(USER, "08:00 AM - Action: 아침 운동, Emotion: 기쁨, Emotion Figure: 50"),
-                new ChatMessage(ASSISTANT, "아침 8시에 일어나서 아침 운동을 하니 살짝 기뻤다."),
-                new ChatMessage(USER, "10:00 AM - Action: 회의 참석, Emotion: 스트레스, Emotion Figure: 300"),
-                new ChatMessage(ASSISTANT, "10시에는 회의 참석을 하니 스트레스가 좀 컸던거 같다."),
-                new ChatMessage(USER, "01:00 PM - Action: 점심 식사, Emotion: 만족, Emotion Figure: 150"),
-                new ChatMessage(ASSISTANT, "1시에 점심 식사를 하였는데 만족스러웠다."),
-                new ChatMessage(USER, "03:00 PM - Action: 업무 마감, Emotion: 성취감, Emotion Figure: 450"),
-                new ChatMessage(ASSISTANT, "3시에 업무 마감을 하니 매우 성취감이 컸다."),
+                new ChatMessage(USER, "재생성 해줘"),
+                new ChatMessage(SYSTEM, "Rewrite the diary with a different perspective or tone while keeping it coherent."),
                 new ChatMessage(USER, bodyPart)
         );
 
         //4. 프롬프트와 생성하는 함수와 GPT API를 실행
-        return getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
+        String content = getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
+        return new DiaryResponseDTO.DiaryCreationResponseDTO(content, bodyPart);
     }
 
     private ChatCompletionRequest generatePrompt(List<ChatMessage> systemPrompt, List<ChatMessage> chatPrompt){

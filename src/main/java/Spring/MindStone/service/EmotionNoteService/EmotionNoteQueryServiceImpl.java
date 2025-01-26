@@ -2,6 +2,7 @@ package Spring.MindStone.service.EmotionNoteService;
 
 import Spring.MindStone.domain.EmotionNote;
 import Spring.MindStone.repository.EmotionNoteRepository.EmotionNoteRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,11 @@ public class EmotionNoteQueryServiceImpl implements EmotionNoteQueryService {
     public List<EmotionNote> getNotesByIdAndDate(Long id, LocalDate date) {
         LocalDateTime startOfDay = date.atStartOfDay(); // 날짜 시작 시간
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay(); // 날짜 다음 날 시작 시간
-
         Sort sort = Sort.by("createdAt").ascending();// 날짜기준으로 오름차순 정렬
-        return emotionNoteRepository.findByIdAndCreatedAtBetween(id, startOfDay, endOfDay, sort);
+        List<EmotionNote> result = emotionNoteRepository.findByIdAndCreatedAtBetween(id, startOfDay, endOfDay, sort);
+        result.stream()
+                .findFirst().orElseThrow(()->new EntityNotFoundException("하루 기록된 일들이 없습니다."));
+        return result;
+
     }
 }

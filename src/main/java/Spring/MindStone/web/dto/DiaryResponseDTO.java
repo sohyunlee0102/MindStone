@@ -12,5 +12,6 @@ public class DiaryResponseDTO {
     @AllArgsConstructor
     public static class DiaryCreationResponseDTO {
         private String content;
+        private String bodyPart;
     }
 }

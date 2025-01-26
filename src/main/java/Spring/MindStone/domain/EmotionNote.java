@@ -46,7 +46,8 @@ public class EmotionNote extends BaseEntity {
 
     @Override
     public String toString() {
-        return getCreatedAt().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
-        + "-" + "Action : " + content + ",Emotion :" + emotion + ",Emotion Figure : " + emotionFigure;
+        return content +"," + emotion +"," + emotionFigure;
     }
+    /*return getCreatedAt().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"))
+            + "-" + "Action : " + content + ",Emotion :" + emotion + ",Emotion Figure : " + emotionFigure;*/
 }
