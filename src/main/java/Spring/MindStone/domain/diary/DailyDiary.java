@@ -1,14 +1,13 @@
-package Spring.MindStone.domain;
+package Spring.MindStone.domain.diary;
 
+import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.domain.common.BaseEntity;
-import Spring.MindStone.domain.enums.MessageStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter

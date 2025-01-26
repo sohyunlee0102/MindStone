@@ -1,4 +1,4 @@
-package Spring.MindStone.domain;
+package Spring.MindStone.domain.emotion;
 
 import jakarta.persistence.*;
 import lombok.*;
