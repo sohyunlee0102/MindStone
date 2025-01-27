@@ -1,6 +1,9 @@
 package Spring.MindStone.service.DiaryService;
 
-import Spring.MindStone.domain.EmotionNote;
+import Spring.MindStone.apiPayload.code.status.ErrorStatus;
+import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
+import Spring.MindStone.domain.emotion.EmotionNote;
+import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryService;
 import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryServiceImpl;
 import Spring.MindStone.web.dto.DiaryResponseDTO;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
@@ -22,10 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DiaryCommandServiceImpl implements DiaryCommandService {
 
-    private final EmotionNoteQueryServiceImpl EmotionNoteService;
-    private final EmotionNoteQueryServiceImpl emotionNoteServiceImpl;
 
-    @Value("${spring.openai.secret-key}")
+    private final EmotionNoteQueryService emotionNoteService;
+
+    @Value("${openai.secret-key}")
     private String SECRET_KEY;
     private OpenAiService openAiService;
 
@@ -55,7 +58,8 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     public DiaryResponseDTO.DiaryCreationResponseDTO createDiary(Long id, LocalDate date) {
         //1. EmotionNoteService에서 멤버의 하루 일들을 갖고옴.
 
-        List<EmotionNote> emotionNoteList = emotionNoteServiceImpl.getNotesByIdAndDate(id, date);
+        List<EmotionNote> emotionNoteList = emotionNoteService.getNotesByIdAndDate(id, date)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.NOTE_NOT_FOUND));
 
         //2. 받아온 리스트를 합침.
         String result = emotionNoteList.stream()
@@ -81,12 +85,23 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
         //4. 프롬프트와 생성하는 함수와 GPT API를 실행
         String content = getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
-        return new DiaryResponseDTO.DiaryCreationResponseDTO(content, result);
+        return DiaryResponseDTO.DiaryCreationResponseDTO
+                .builder().content(content).bodyPart(result).build();
     }
 
     @Override
     public DiaryResponseDTO.DiaryCreationResponseDTO createDiaryRe(Long id, String bodyPart, LocalDate date){
         List<ChatMessage> chatPrompt = List.of(
+                new ChatMessage(USER, "아침 운동, 기쁨, 50"),
+                new ChatMessage(ASSISTANT, "아침에 일어나서 운동을 하니깐 그래도 상쾌한 기분이었다."),
+                new ChatMessage(USER, "회의 참석, 분노, 300"),
+                new ChatMessage(ASSISTANT, "회의 참석을 하니 아침 운동의 기쁨이 사라질정도로 화났다."),
+                new ChatMessage(USER, "점심 식사, 만족, 150"),
+                new ChatMessage(ASSISTANT, "그래도 점심 식사를 하니 꽤나 만족스러웠다."),
+                new ChatMessage(USER, "업무 마감, 성취감, 450"),
+                new ChatMessage(ASSISTANT, "업무 마감까지 하니 매우 성취감이 컸다."),
+                new ChatMessage(USER, "ㅇㅁㄴㅇ, 분노, 50"),
+                new ChatMessage(ASSISTANT, "이유 없이 분노가 좀 차올랐다."),
                 new ChatMessage(USER, "재생성 해줘"),
                 new ChatMessage(SYSTEM, "Rewrite the diary with a different perspective or tone while keeping it coherent."),
                 new ChatMessage(USER, bodyPart)
@@ -94,7 +109,8 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
         //4. 프롬프트와 생성하는 함수와 GPT API를 실행
         String content = getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
-        return new DiaryResponseDTO.DiaryCreationResponseDTO(content, bodyPart);
+        return DiaryResponseDTO.DiaryCreationResponseDTO
+                .builder().content(content).bodyPart(bodyPart).build();
     }
 
     private ChatCompletionRequest generatePrompt(List<ChatMessage> systemPrompt, List<ChatMessage> chatPrompt){
@@ -116,49 +132,5 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         System.out.printf("GPTTranslationService: translation took %d seconds, consumed %d tokens total (prompt %d, completion %d)%n", (endTime-startTime)/1000, result.getUsage().getTotalTokens(), result.getUsage().getPromptTokens(), result.getUsage().getCompletionTokens());
         return result.getChoices().get(0).getMessage().getContent();
     }
-
-
-
-
-//    public String generatePrompt(List<EmotionNote> emotionNoteList){
-//        return null;
-//    }
-//
-//    public String callOpenAI(String prompt, int maxTokens) throws JsonProcessingException {
-//        // 1. 헤더 설정
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.setBearerAuth(gptConfig.getSecretKey());
-//
-//        // 2. 메시지 템플릿 정의
-//        String systemMessage = "You are a helpful assistant. " + // 시스템 역할 메시지
-//                "Please generate a diary entry based on the user input below.";
-//        String userMessage = prompt;
-//
-//        // 3. 요청 본문 작성
-//        Map<String, Object> requestBody = new HashMap<>();
-//        requestBody.put("model", gptConfig.getModel());
-//        requestBody.put("messages", Arrays.asList(
-//                Map.of("role", "system", "content", systemMessage),
-//                Map.of("role", "user", "content", userMessage)
-//        ));
-//        requestBody.put("temperature", 0.3);
-//        requestBody.put("max_tokens", maxTokens);
-//
-//        // 4. HTTP 요청 생성
-//        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-//
-//        try {
-//            // 5. REST API 호출
-//            ResponseEntity<String> response = restTemplate.exchange(
-//                    API_URL, HttpMethod.POST, entity, String.class);
-//            return response.getBody();
-//        } catch (Exception e) {
-//            // 예외 메시지 상세화
-//            throw new RuntimeException("Failed to call OpenAI API: " + e.getMessage(), e);
-//        }
-//    }
-
-
 
 }

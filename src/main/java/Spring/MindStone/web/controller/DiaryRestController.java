@@ -3,47 +3,56 @@ package Spring.MindStone.web.controller;
 import Spring.MindStone.apiPayload.ApiResponse;
 import Spring.MindStone.service.DiaryService.DiaryCommandService;
 import Spring.MindStone.service.DiaryService.DiaryCommandServiceImpl;
+import Spring.MindStone.service.DiaryService.DiaryQueryService;
 import Spring.MindStone.web.dto.DiaryRequestDTO;
 import Spring.MindStone.web.dto.DiaryResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/diary")
+@RequestMapping("/api/diary")
 @RequiredArgsConstructor
+@Tag(name = "Diary", description = "Diary API")
 public class DiaryRestController {
-    private final DiaryCommandServiceImpl diaryCommandService;
+    private final DiaryCommandService diaryCommandService;
+    private final DiaryQueryService diaryQueryService;
 
-    @GetMapping("/create")
-    @Tag(name = "Response Estimate", description = "Response Estimate API")
+
+    @PostMapping("/create")
     @Operation(summary = "일기 자동생성", description = "하루 마무리에서 일기 자동생성해주는 기능")
-    @Parameters({
-            @Parameter(name = "date", description = "날짜", example = "2025-01-25")
-    })
-    public ApiResponse<DiaryResponseDTO.DiaryCreationResponseDTO> createAutoDiary(@RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest){
+    public ApiResponse<DiaryResponseDTO.DiaryCreationResponseDTO> createAutoDiary
+            (@Valid @RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest){
             return ApiResponse.onSuccess(diaryCommandService.createDiary(diaryRequest.getId(), diaryRequest.getDate()));
     }
 
     @PostMapping("/recreate")
-    @Tag(name = "Response")
-    @Operation(summary = "일기 자동생성", description = "하루 마무리에서 일기 자동생성해주는 기능")
-    @Parameters({
-            @Parameter(name = "date", description = "날짜", example = "2025-01-25"),
-            @Parameter(name = "bodyPart", description = "일기 내용", example = "아침식사,기쁨,50\n비맞아서우울함,우울,100")
-    })
-    public ApiResponse<DiaryResponseDTO.DiaryCreationResponseDTO> createAutoDiaryRe(@RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest){
+    @Operation(summary = "일기 재생성", description = "사용자가 일기를 재생성할때의 기능(지금은 테스트용)")
+    public ApiResponse<DiaryResponseDTO.DiaryCreationResponseDTO> createAutoDiaryRe
+            (@Valid @RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest){
+        System.out.println("GET api/diary/recreate");
+        System.out.println(diaryRequest.getBodyPart());
         return ApiResponse.onSuccess(diaryCommandService.createDiaryRe(diaryRequest.getId(), diaryRequest.getBodyPart(), diaryRequest.getDate()));
+    }
+
+    @GetMapping("/get")
+    @Operation(summary = "일기 요청", description = "특정날짜 기준 일기 요청")
+    @Parameters({
+            @Parameter(name = "id", description = "멤버 id 나중에 security 다 만들어지면 바뀜"),
+            @Parameter(name = "date", description = "요청하는 날짜 기준 yyyy-mm-dd로 요청")
+    })
+    public ApiResponse<DiaryResponseDTO.DiaryGetResponseDTO> getDiary(Long id, LocalDate date){
+        System.out.println("GET api/diary/get");
+        return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(id,date));
     }
 
 }

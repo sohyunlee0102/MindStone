@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
                 .authorizeHttpRequests((requests) ->requests
-                        .requestMatchers("/", "/api/members", "/api/auth/**").permitAll()
+                        .requestMatchers("/", "/api/members", "/api/auth/**", "/api/diary/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // 스웨거 api
                         .requestMatchers("/api/test/auth/**").hasRole("USER") // JWT 토큰 테스트용 api
                         .anyRequest().authenticated()

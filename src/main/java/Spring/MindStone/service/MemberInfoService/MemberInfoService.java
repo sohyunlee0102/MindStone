@@ -2,7 +2,7 @@ package Spring.MindStone.service.MemberInfoService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
-import Spring.MindStone.domain.MemberInfo;
+import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.web.dto.MemberInfoRequestDTO;
 import Spring.MindStone.repository.MemberInfoRepository;
 import Spring.MindStone.web.dto.MemberInfoResponseDTO;

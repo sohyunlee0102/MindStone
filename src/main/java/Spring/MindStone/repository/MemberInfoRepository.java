@@ -1,6 +1,6 @@
 package Spring.MindStone.repository;
 
-import Spring.MindStone.domain.MemberInfo;
+import Spring.MindStone.domain.member.MemberInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
