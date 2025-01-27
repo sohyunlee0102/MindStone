@@ -1,5 +1,6 @@
 package Spring.MindStone.web.controller;
 
+
 import Spring.MindStone.apiPayload.ApiResponse;
 import Spring.MindStone.service.DiaryService.DiaryCommandService;
 import Spring.MindStone.service.DiaryService.DiaryCommandServiceImpl;
@@ -52,5 +53,6 @@ public class DiaryRestController {
         System.out.println("GET api/diary/{memberId}/{date}");
         return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(id,date));
     }
+
 
 }
