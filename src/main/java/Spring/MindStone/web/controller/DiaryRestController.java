@@ -44,14 +44,12 @@ public class DiaryRestController {
         return ApiResponse.onSuccess(diaryCommandService.createDiaryRe(diaryRequest.getId(), diaryRequest.getBodyPart(), diaryRequest.getDate()));
     }
 
-    @GetMapping("/get")
+    @GetMapping("/{memberId}/{date}")
     @Operation(summary = "일기 요청", description = "특정날짜 기준 일기 요청")
-    @Parameters({
-            @Parameter(name = "id", description = "멤버 id 나중에 security 다 만들어지면 바뀜"),
-            @Parameter(name = "date", description = "요청하는 날짜 기준 yyyy-mm-dd로 요청")
-    })
-    public ApiResponse<DiaryResponseDTO.DiaryGetResponseDTO> getDiary(Long id, LocalDate date){
-        System.out.println("GET api/diary/get");
+    public ApiResponse<DiaryResponseDTO.DiaryGetResponseDTO> getDiary
+            (@PathVariable("memberId") Long id,
+             @PathVariable("date") LocalDate date){
+        System.out.println("GET api/diary/{memberId}/{date}");
         return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(id,date));
     }
 

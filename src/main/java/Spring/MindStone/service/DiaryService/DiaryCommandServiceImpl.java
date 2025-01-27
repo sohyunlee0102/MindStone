@@ -58,8 +58,8 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     public DiaryResponseDTO.DiaryCreationResponseDTO createDiary(Long id, LocalDate date) {
         //1. EmotionNoteService에서 멤버의 하루 일들을 갖고옴.
 
-        List<EmotionNote> emotionNoteList = emotionNoteService.getNotesByIdAndDate(id, date)
-                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.NOTE_NOT_FOUND));
+        List<EmotionNote> emotionNoteList = emotionNoteService.getNotesByIdAndDate(id, date);
+
 
         //2. 받아온 리스트를 합침.
         String result = emotionNoteList.stream()

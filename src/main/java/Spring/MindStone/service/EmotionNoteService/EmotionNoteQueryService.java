@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmotionNoteQueryService {
-    public Optional<List<EmotionNote>> getNotesByIdAndDate(Long id, LocalDate date);
+    public List<EmotionNote> getNotesByIdAndDate(Long id, LocalDate date);
 }
