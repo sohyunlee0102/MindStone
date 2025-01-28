@@ -2,9 +2,13 @@ package Spring.MindStone.config.jwt;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
+import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
+import Spring.MindStone.domain.member.MemberInfo;
+import Spring.MindStone.service.MemberInfoService.MemberInfoService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +33,17 @@ public class JwtTokenUtil {
     }
 
     // AccessToken 생성
-    public static String generateAccessToken(String email) {
+    public static String generateAccessToken(String email, MemberInfoService memberInfoService) {
+
+        MemberInfo memberInfo = memberInfoService.findMemberByEmail(email);
+
+        if (memberInfo == null) {
+            throw new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
         return Jwts.builder()
                 .setSubject(email)
-                .setId(UUID.randomUUID().toString())
+                .setId(memberInfo.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
@@ -40,10 +51,17 @@ public class JwtTokenUtil {
     }
 
     // RefreshToken 생성
-    public static String generateRefreshToken(String email) {
+    public static String generateRefreshToken(String email, MemberInfoService memberInfoService) {
+
+        MemberInfo memberInfo = memberInfoService.findMemberByEmail(email);
+
+        if (memberInfo == null) {
+            throw new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND);
+        }
+
         return Jwts.builder()
                 .setSubject(email)
-                .setId(UUID.randomUUID().toString())
+                .setId(memberInfo.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)

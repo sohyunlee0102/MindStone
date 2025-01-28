@@ -3,9 +3,9 @@ package Spring.MindStone.service.MemberInfoService;
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.member.MemberInfo;
-import Spring.MindStone.web.dto.MemberInfoRequestDTO;
-import Spring.MindStone.repository.MemberInfoRepository;
-import Spring.MindStone.web.dto.MemberInfoResponseDTO;
+import Spring.MindStone.web.dto.memberInfoDto.MemberInfoRequestDTO;
+import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
+import Spring.MindStone.web.dto.memberInfoDto.MemberInfoResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -73,6 +73,13 @@ public class MemberInfoService {
         MemberInfo memberInfo = memberInfoRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
         return new MemberInfoResponseDTO.EmailDto(memberInfo.getEmail(), LocalDateTime.now());
+    }
+
+    // 아이디 찾기
+    @Transactional
+    public MemberInfo findMemberByEmail(String email) {
+        return memberInfoRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
 }

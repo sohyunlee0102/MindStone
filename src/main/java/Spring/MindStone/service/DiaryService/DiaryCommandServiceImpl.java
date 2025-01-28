@@ -1,11 +1,8 @@
 package Spring.MindStone.service.DiaryService;
 
-import Spring.MindStone.apiPayload.code.status.ErrorStatus;
-import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.emotion.EmotionNote;
 import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryService;
-import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryServiceImpl;
-import Spring.MindStone.web.dto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;

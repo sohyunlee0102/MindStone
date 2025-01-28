@@ -1,4 +1,4 @@
-package Spring.MindStone.web.dto;
+package Spring.MindStone.web.dto.memberInfoDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
