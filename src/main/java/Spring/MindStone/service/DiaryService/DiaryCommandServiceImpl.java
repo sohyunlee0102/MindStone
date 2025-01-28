@@ -66,6 +66,8 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
                 .map(EmotionNote::toString)
                 .collect(Collectors.joining("\n"));
 
+        System.out.println("일기 자동생성 호출 - 들어간 내용"+result);
+
         //3.result를 프롬프트와 함께 제작
         List<ChatMessage> chatPrompt = List.of(
                 new ChatMessage(USER, "아침 운동, 기쁨, 50"),

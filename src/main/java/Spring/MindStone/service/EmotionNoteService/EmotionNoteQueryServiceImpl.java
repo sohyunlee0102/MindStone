@@ -1,5 +1,7 @@
 package Spring.MindStone.service.EmotionNoteService;
 
+import Spring.MindStone.apiPayload.code.status.ErrorStatus;
+import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.emotion.EmotionNote;
 import Spring.MindStone.repository.EmotionNoteRepository.EmotionNoteRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,9 +24,12 @@ public class EmotionNoteQueryServiceImpl implements EmotionNoteQueryService {
         LocalDateTime startOfDay = date.atStartOfDay(); // 날짜 시작 시간
         LocalDateTime endOfDay = date.plusDays(1).atStartOfDay(); // 날짜 다음 날 시작 시간
         Sort sort = Sort.by("createdAt").ascending();// 날짜기준으로 오름차순 정렬
-        List<EmotionNote> result = emotionNoteRepository.findByIdAndCreatedAtBetween(id, startOfDay, endOfDay, sort)
-                .orElseThrow(() -> new EntityNotFoundException("해당 날짜의 일과가 기록되지 않았습니다."));
-        return result;
+        List<EmotionNote> result = emotionNoteRepository.findByIdAndCreatedAtBetween(id, startOfDay, endOfDay, sort);
 
+        if(result.isEmpty()){
+            throw new MemberInfoHandler(ErrorStatus.NOTE_NOT_FOUND);
+        }
+
+        return result;
     }
 }

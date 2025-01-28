@@ -11,5 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface EmotionNoteRepository extends JpaRepository<EmotionNote, Long> {
-    Optional<List<EmotionNote>> findByIdAndCreatedAtBetween(Long id, LocalDateTime startOfDay, LocalDateTime endOfDay, Sort sort);
+    List<EmotionNote> findByIdAndCreatedAtBetween(Long id, LocalDateTime startOfDay, LocalDateTime endOfDay, Sort sort);
 }
