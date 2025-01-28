@@ -1,4 +1,4 @@
-package Spring.MindStone.repository;
+package Spring.MindStone.repository.memberInfoRepository;
 
 import Spring.MindStone.domain.member.MemberInfo;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,5 +1,6 @@
 package Spring.MindStone.service.DiaryService;
 
+import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import Spring.MindStone.web.dto.diaryDto.DiarySaveDTO;
@@ -19,6 +20,6 @@ public interface DiaryCommandService {
 
 
     /** 일기 저장 **/
-    SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, MemberInfo memberInfo, MultipartFile image);
+    SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId, MultipartFile image);
 
 }
