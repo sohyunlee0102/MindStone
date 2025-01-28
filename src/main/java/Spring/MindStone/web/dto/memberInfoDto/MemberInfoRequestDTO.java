@@ -76,4 +76,20 @@ public class MemberInfoRequestDTO {
         String code;
     }
 
+    @Getter
+    @Setter
+    public static class NicknameDto {
+        @NotBlank
+        String nickname;
+    }
+
+    @Getter
+    @Setter
+    public static class PasswordDto {
+        @NotBlank
+        String oldPassword;
+        @NotBlank
+        String newPassword;
+    }
+
 }
