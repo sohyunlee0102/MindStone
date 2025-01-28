@@ -33,7 +33,7 @@ public class AuthControllerTest {
 
     private String accessToken;
     private String refreshToken;
-    private String email = "user@example.com";
+    private String email = "user@example.com"; // 회원가입 된 이메일 넣으면 됨
 
     @BeforeEach
     public void loginAndGetToken() throws Exception {

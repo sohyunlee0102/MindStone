@@ -2,6 +2,7 @@ package Spring.MindStone.web.controller;
 
 
 import Spring.MindStone.apiPayload.ApiResponse;
+import Spring.MindStone.config.jwt.JwtTokenUtil;
 import Spring.MindStone.service.DiaryService.DiaryCommandService;
 import Spring.MindStone.service.DiaryService.DiaryQueryService;
 import Spring.MindStone.web.dto.diaryDto.DiaryRequestDTO;
@@ -22,23 +23,29 @@ import java.time.LocalDate;
 public class DiaryRestController {
     private final DiaryCommandService diaryCommandService;
     private final DiaryQueryService diaryQueryService;
-
+    private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/create")
     @Operation(summary = "일기 자동생성", description = "하루 마무리에서 일기 자동생성해주는 기능")
     public ApiResponse<DiaryResponseDTO.DiaryCreationResponseDTO> createAutoDiary
-            (@Valid @RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest){
-            return ApiResponse.onSuccess(diaryCommandService.createDiary(diaryRequest.getId(), diaryRequest.getDate()));
+            (@Valid @RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest,
+             @RequestHeader("Authorization") String authorization) {
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        System.out.println(memberId);
+        return ApiResponse.onSuccess(diaryCommandService.createDiary(memberId, diaryRequest.getDate()));
     }
 
     @PostMapping("/recreate")
     @Operation(summary = "일기 재생성", description = "사용자가 일기를 재생성할때의 기능(지금은 테스트용)")
     public ApiResponse<DiaryResponseDTO.DiaryCreationResponseDTO> createAutoDiaryRe
-            (@Valid @RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest){
+            (@Valid @RequestBody DiaryRequestDTO.DiaryCreationRequestDTO diaryRequest,
+             @RequestHeader("Authorization") String authorization) {
         System.out.println("GET api/diary/recreate");
         System.out.println(diaryRequest.getBodyPart());
-        return ApiResponse.onSuccess(diaryCommandService.createDiaryRe(diaryRequest.getId(), diaryRequest.getBodyPart(), diaryRequest.getDate()));
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryCommandService.createDiaryRe(memberId, diaryRequest.getBodyPart(), diaryRequest.getDate()));
     }
+
 
     @GetMapping("/{memberId}/{date}")
     @Operation(summary = "일기 요청", description = "특정날짜 기준 일기 요청")
@@ -48,6 +55,5 @@ public class DiaryRestController {
         System.out.println("GET api/diary/{memberId}/{date}");
         return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(id,date));
     }
-
 
 }

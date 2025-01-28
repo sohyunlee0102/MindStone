@@ -12,7 +12,6 @@ public class DiaryRequestDTO {
     @Getter
     @Setter
     public static class DiaryCreationRequestDTO {
-        private Long id;          // Optional: 사용자 ID
         @NotBlank
         private String bodyPart;
         @NotNull

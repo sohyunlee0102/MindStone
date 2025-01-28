@@ -82,4 +82,10 @@ public class MemberInfoService {
                 .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    @Transactional
+    public MemberInfo findMemberById(Long memberId) {
+        return memberInfoRepository.findById(memberId)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+    }
+
 }

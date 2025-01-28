@@ -82,6 +82,16 @@ public class JwtTokenUtil {
         }
     }
 
+    public static Long extractMemberId(String authorization) {
+        String accessToken = authorization.substring(7);
+        Claims claims = validateToken(accessToken);
+        String memberId = claims.getId();
+        if (memberId == null || memberId.isEmpty()) {
+            throw new AuthHandler(ErrorStatus.INVALID_TOKEN);
+        }
+        return Long.parseLong(memberId);
+    }
+
     public static class InvalidTokenException extends RuntimeException {
         public InvalidTokenException(String message) {
             super(message);
