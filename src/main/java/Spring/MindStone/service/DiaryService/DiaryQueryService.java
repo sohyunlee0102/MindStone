@@ -1,6 +1,6 @@
 package Spring.MindStone.service.DiaryService;
 
-import Spring.MindStone.web.dto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 
 import java.time.LocalDate;
 

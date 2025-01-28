@@ -38,9 +38,13 @@ public class DailyDiary extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content; // 일기 내용
 
-    @Column(nullable = false)
-    private Boolean isPublic; // 공개 여부
+    /*@Column(nullable = false)
+    private Boolean isPublic; // 공개 여부*/
 
     @Column(nullable = true, length = 255)
     private String imagePath; // 이미지 경로
+
+    public void update(){
+
+    }
 }

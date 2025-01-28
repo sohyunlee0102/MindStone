@@ -1,4 +1,4 @@
-package Spring.MindStone.web.dto;
+package Spring.MindStone.web.dto.diaryDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,11 +1,13 @@
 package Spring.MindStone.service.DiaryService;
 
-import Spring.MindStone.apiPayload.code.status.ErrorStatus;
-import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
+import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.domain.emotion.EmotionNote;
+import Spring.MindStone.domain.member.MemberInfo;
+import Spring.MindStone.repository.DiaryRepository.DiaryRepository;
 import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryService;
-import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryServiceImpl;
-import Spring.MindStone.web.dto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.DiarySaveDTO;
+import Spring.MindStone.web.dto.diaryDto.SimpleDiaryDTO;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
@@ -15,6 +17,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -27,6 +30,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
 
     private final EmotionNoteQueryService emotionNoteService;
+    private final DiaryRepository diaryRepository;
 
     @Value("${openai.secret-key}")
     private String SECRET_KEY;
@@ -133,6 +137,22 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         Long endTime = System.currentTimeMillis();
         System.out.printf("GPTTranslationService: translation took %d seconds, consumed %d tokens total (prompt %d, completion %d)%n", (endTime-startTime)/1000, result.getUsage().getTotalTokens(), result.getUsage().getPromptTokens(), result.getUsage().getCompletionTokens());
         return result.getChoices().get(0).getMessage().getContent();
+    }
+
+    @Override
+    public SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, MemberInfo memberInfo, MultipartFile image){
+        //이미지 받아오는거 설정해야함!
+        DailyDiary diary = DailyDiary.builder()
+                .date(saveDTO.getDate())
+                .memberInfo(memberInfo)
+                .impressiveThing(saveDTO.getImpressiveThing())
+                .title(saveDTO.getTitle())
+                .content(saveDTO.getContent())
+                .imagePath(image.toString()).build();
+
+        diaryRepository.save(diary);
+
+        return new SimpleDiaryDTO(diary);
     }
 
 }

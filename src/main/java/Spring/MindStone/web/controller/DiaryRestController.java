@@ -2,21 +2,20 @@ package Spring.MindStone.web.controller;
 
 
 import Spring.MindStone.apiPayload.ApiResponse;
+import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.service.DiaryService.DiaryCommandService;
-import Spring.MindStone.service.DiaryService.DiaryCommandServiceImpl;
 import Spring.MindStone.service.DiaryService.DiaryQueryService;
-import Spring.MindStone.web.dto.DiaryRequestDTO;
-import Spring.MindStone.web.dto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.DiaryRequestDTO;
+import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.DiarySaveDTO;
+import Spring.MindStone.web.dto.diaryDto.SimpleDiaryDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -53,6 +52,18 @@ public class DiaryRestController {
         System.out.println("GET api/diary/{memberId}/{date}");
         return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(id,date));
     }
+
+    @PostMapping("/save")
+    @Operation(summary = "일기 저장", description = "일기 내용이 마음에 들때 저장요청")
+    public ApiResponse<String> saveDiary(
+            @Valid @RequestBody DiarySaveDTO diaryDTO,
+            @RequestPart(value = "image", required = false) MultipartFile image
+            ){
+        System.out.println("POST api/diary/save");
+        return ApiResponse.onSuccess(diaryCommandService.saveDiary(diaryDTO,new MemberInfo(),image))
+    }
+
+
 
 
 }
