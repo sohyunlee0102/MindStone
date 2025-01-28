@@ -88,4 +88,24 @@ public class MemberInfoService {
                 .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
     }
 
+    @Transactional
+    public Long patchNickname(MemberInfoRequestDTO.NicknameDto request, Long memberId) {
+        MemberInfo member = memberInfoRepository.findById(memberId)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        member.setNickname(request.getNickname());
+        return memberInfoRepository.save(member).getId();
+    }
+
+    @Transactional
+    public Long patchPassword(MemberInfoRequestDTO.PasswordDto request, Long memberId) {
+        MemberInfo member = memberInfoRepository.findById(memberId)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
+            throw new MemberInfoHandler(ErrorStatus.INVALID_PASSWORD);
+        }
+        member.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        return memberInfoRepository.save(member).getId();
+    }
+
 }

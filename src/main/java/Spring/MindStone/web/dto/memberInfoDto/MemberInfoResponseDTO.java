@@ -38,4 +38,14 @@ public class MemberInfoResponseDTO {
         LocalDateTime updatedAt;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberProfileDto {
+        private String email;
+        private String nickname;
+        private LocalDateTime updatedAt;
+    }
+
 }
