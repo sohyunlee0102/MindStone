@@ -33,3 +33,7 @@ spring:
 
   jwt:
     secret-key: ${JWT_SECRET_KEY}
+
+openai:
+    model: gpt-3.5-turbo
+    secret-key: ${OPENAI_KEY}

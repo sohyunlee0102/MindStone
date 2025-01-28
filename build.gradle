@@ -40,7 +40,14 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
-}
+
+	//openAi
+	implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+	implementation 'com.theokanning.openai-gpt3-java:service:0.18.2'
+
+	}
+
 
 tasks.named('test') {
 	useJUnitPlatform()
