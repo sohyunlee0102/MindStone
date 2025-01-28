@@ -1,4 +1,4 @@
-package Spring.MindStone.web.dto;
+package Spring.MindStone.web.dto.memberInfoDto;
 
 import Spring.MindStone.domain.enums.Job;
 import Spring.MindStone.domain.enums.MBTI;

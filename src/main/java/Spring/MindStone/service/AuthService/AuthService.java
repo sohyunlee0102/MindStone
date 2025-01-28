@@ -3,8 +3,9 @@ package Spring.MindStone.service.AuthService;
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
-import Spring.MindStone.web.dto.MemberInfoRequestDTO;
-import Spring.MindStone.web.dto.MemberInfoResponseDTO;
+import Spring.MindStone.service.MemberInfoService.MemberInfoService;
+import Spring.MindStone.web.dto.memberInfoDto.MemberInfoRequestDTO;
+import Spring.MindStone.web.dto.memberInfoDto.MemberInfoResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final MemberInfoService memberInfoService;
 
     // 로그인 및 JWT 토큰 발급
     @Transactional
@@ -30,8 +32,8 @@ public class AuthService {
                     new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
             );
 
-            String accessToken = JwtTokenUtil.generateAccessToken(loginDto.getEmail());
-            String refreshToken = JwtTokenUtil.generateRefreshToken(loginDto.getEmail());
+            String accessToken = JwtTokenUtil.generateAccessToken(loginDto.getEmail(), memberInfoService);
+            String refreshToken = JwtTokenUtil.generateRefreshToken(loginDto.getEmail(), memberInfoService);
 
             return MemberInfoResponseDTO.LoginResponseDto.builder()
                     .email(loginDto.getEmail())
@@ -55,7 +57,7 @@ public class AuthService {
             throw new AuthHandler(ErrorStatus.TOKEN_EXPIRED);
         }
 
-        String newAccessToken = JwtTokenUtil.generateAccessToken(email);
+        String newAccessToken = JwtTokenUtil.generateAccessToken(email, memberInfoService);
 
         return MemberInfoResponseDTO.LoginResponseDto.builder()
                 .email(email)

@@ -1,16 +1,14 @@
 package Spring.MindStone.service.DiaryService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
-import Spring.MindStone.apiPayload.exception.GeneralException;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.repository.DiaryRepository.DiaryRepository;
-import Spring.MindStone.web.dto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor

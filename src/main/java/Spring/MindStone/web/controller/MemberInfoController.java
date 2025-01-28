@@ -1,8 +1,8 @@
 package Spring.MindStone.web.controller;
 
 import Spring.MindStone.apiPayload.ApiResponse;
-import Spring.MindStone.web.dto.MemberInfoRequestDTO;
-import Spring.MindStone.web.dto.MemberInfoResponseDTO;
+import Spring.MindStone.web.dto.memberInfoDto.MemberInfoRequestDTO;
+import Spring.MindStone.web.dto.memberInfoDto.MemberInfoResponseDTO;
 import Spring.MindStone.service.MemberInfoService.MemberInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

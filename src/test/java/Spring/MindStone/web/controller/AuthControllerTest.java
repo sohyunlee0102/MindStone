@@ -1,6 +1,6 @@
 package Spring.MindStone.web.controller;
 
-import Spring.MindStone.web.dto.MemberInfoRequestDTO;
+import Spring.MindStone.web.dto.memberInfoDto.MemberInfoRequestDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -33,7 +33,7 @@ public class AuthControllerTest {
 
     private String accessToken;
     private String refreshToken;
-    private String email = "user@example.com";
+    private String email = "user@example.com"; // 회원가입 된 이메일 넣으면 됨
 
     @BeforeEach
     public void loginAndGetToken() throws Exception {
