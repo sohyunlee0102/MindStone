@@ -1,6 +1,5 @@
-package Spring.MindStone.repository.DiaryRepository;
+package Spring.MindStone.repository.diaryRepository;
 
-import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.domain.diary.DiaryImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

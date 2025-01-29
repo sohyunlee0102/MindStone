@@ -1,7 +1,6 @@
-package Spring.MindStone.service.DiaryService;
+package Spring.MindStone.service.diaryService;
 
 import Spring.MindStone.web.dto.diaryDto.*;
-import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 

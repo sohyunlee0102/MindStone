@@ -1,9 +1,9 @@
-package Spring.MindStone.service.AuthService;
+package Spring.MindStone.service.authService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
-import Spring.MindStone.service.MemberInfoService.MemberInfoService;
+import Spring.MindStone.service.memberInfoService.MemberInfoService;
 import Spring.MindStone.web.dto.memberDto.MemberInfoRequestDTO;
 import Spring.MindStone.web.dto.memberDto.MemberInfoResponseDTO;
 import jakarta.transaction.Transactional;

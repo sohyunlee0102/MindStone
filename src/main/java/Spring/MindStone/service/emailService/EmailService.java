@@ -1,4 +1,4 @@
-package Spring.MindStone.service.EmailService;
+package Spring.MindStone.service.emailService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;

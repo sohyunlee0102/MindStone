@@ -1,4 +1,4 @@
-package Spring.MindStone.service.MemberInfoService;
+package Spring.MindStone.service.memberInfoService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;

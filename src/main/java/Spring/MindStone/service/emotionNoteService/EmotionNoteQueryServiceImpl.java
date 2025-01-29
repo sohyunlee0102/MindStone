@@ -1,10 +1,9 @@
-package Spring.MindStone.service.EmotionNoteService;
+package Spring.MindStone.service.emotionNoteService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.emotion.EmotionNote;
-import Spring.MindStone.repository.EmotionNoteRepository.EmotionNoteRepository;
-import jakarta.persistence.EntityNotFoundException;
+import Spring.MindStone.repository.emotionNoteRepository.EmotionNoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
