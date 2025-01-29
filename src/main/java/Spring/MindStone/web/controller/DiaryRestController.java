@@ -2,10 +2,9 @@ package Spring.MindStone.web.controller;
 
 
 import Spring.MindStone.apiPayload.ApiResponse;
-import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
-import Spring.MindStone.service.DiaryService.DiaryCommandService;
-import Spring.MindStone.service.DiaryService.DiaryQueryService;
+import Spring.MindStone.service.diaryService.DiaryCommandService;
+import Spring.MindStone.service.diaryService.DiaryQueryService;
 import Spring.MindStone.web.dto.diaryDto.*;
 import io.swagger.v3.oas.annotations.Operation;
 

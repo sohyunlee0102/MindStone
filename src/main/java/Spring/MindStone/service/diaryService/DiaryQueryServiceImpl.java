@@ -1,13 +1,11 @@
-package Spring.MindStone.service.DiaryService;
+package Spring.MindStone.service.diaryService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.diary.DailyDiary;
-import Spring.MindStone.domain.member.MemberInfo;
-import Spring.MindStone.repository.DiaryRepository.DiaryRepository;
+import Spring.MindStone.repository.diaryRepository.DiaryRepository;
 import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
 import Spring.MindStone.web.dto.diaryDto.DiaryCallendarDTO;
-import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import Spring.MindStone.web.dto.diaryDto.SimpleDiaryDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

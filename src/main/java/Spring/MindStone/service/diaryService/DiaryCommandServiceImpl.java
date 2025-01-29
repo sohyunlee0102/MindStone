@@ -1,4 +1,4 @@
-package Spring.MindStone.service.DiaryService;
+package Spring.MindStone.service.diaryService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
@@ -7,10 +7,10 @@ import Spring.MindStone.domain.diary.DiaryImage;
 import Spring.MindStone.domain.emotion.EmotionNote;
 import Spring.MindStone.domain.enums.EmotionList;
 import Spring.MindStone.domain.member.MemberInfo;
-import Spring.MindStone.repository.DiaryRepository.DiaryImageRepository;
-import Spring.MindStone.repository.DiaryRepository.DiaryRepository;
+import Spring.MindStone.repository.diaryRepository.DiaryImageRepository;
+import Spring.MindStone.repository.diaryRepository.DiaryRepository;
 import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
-import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryService;
+import Spring.MindStone.service.emotionNoteService.EmotionNoteQueryService;
 import Spring.MindStone.service.FileService;
 import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import Spring.MindStone.web.dto.diaryDto.DiarySaveDTO;

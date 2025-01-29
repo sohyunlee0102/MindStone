@@ -4,18 +4,15 @@ import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.member.MemberInfo;
-import Spring.MindStone.service.MemberInfoService.MemberInfoService;
+import Spring.MindStone.service.memberInfoService.MemberInfoService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
 import java.util.Date;
-import java.util.UUID;
 
 @Component
 public class JwtTokenUtil {

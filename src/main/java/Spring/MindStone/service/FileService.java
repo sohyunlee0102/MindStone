@@ -2,7 +2,7 @@ package Spring.MindStone.service;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.GeneralException;
-import Spring.MindStone.repository.DiaryRepository.DiaryImageRepository;
+import Spring.MindStone.repository.diaryRepository.DiaryImageRepository;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;

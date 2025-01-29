@@ -1,14 +1,12 @@
 package Spring.MindStone.web.controller;
 
 import Spring.MindStone.apiPayload.ApiResponse;
-import Spring.MindStone.service.AuthService.AuthService;
-import Spring.MindStone.service.EmailService.EmailService;
-import Spring.MindStone.service.MemberInfoService.MemberInfoService;
+import Spring.MindStone.service.authService.AuthService;
+import Spring.MindStone.service.emailService.EmailService;
+import Spring.MindStone.service.memberInfoService.MemberInfoService;
 import Spring.MindStone.web.dto.memberDto.MemberInfoRequestDTO;
 import Spring.MindStone.web.dto.memberDto.MemberInfoResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

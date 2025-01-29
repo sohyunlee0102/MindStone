@@ -1,4 +1,4 @@
-package Spring.MindStone.repository.EmotionNoteRepository;
+package Spring.MindStone.repository.emotionNoteRepository;
 
 import Spring.MindStone.domain.emotion.EmotionNote;
 import org.springframework.data.domain.Sort;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface EmotionNoteRepository extends JpaRepository<EmotionNote, Long> {
