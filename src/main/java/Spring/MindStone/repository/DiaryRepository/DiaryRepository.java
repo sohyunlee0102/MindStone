@@ -19,4 +19,10 @@ public interface DiaryRepository extends JpaRepository<DailyDiary, Long> {
     Optional<DailyDiary> findDailyDiaryByDate(@Param("memberId") Long memberId,
                                               @Param("date") LocalDate date);
 
+    @Query("SELECT d FROM DailyDiary d WHERE d.memberInfo.id = :memberId AND d.date BETWEEN :startDate AND :endDate")
+    List<DailyDiary> findByMemberIdAndDateBetween(
+            @Param("memberId") Long memberId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }

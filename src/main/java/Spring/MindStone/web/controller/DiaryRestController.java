@@ -2,19 +2,24 @@ package Spring.MindStone.web.controller;
 
 
 import Spring.MindStone.apiPayload.ApiResponse;
+import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
 import Spring.MindStone.service.DiaryService.DiaryCommandService;
 import Spring.MindStone.service.DiaryService.DiaryQueryService;
-import Spring.MindStone.web.dto.diaryDto.DiaryRequestDTO;
-import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
+import Spring.MindStone.web.dto.diaryDto.*;
 import io.swagger.v3.oas.annotations.Operation;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/diary")
@@ -47,13 +52,73 @@ public class DiaryRestController {
     }
 
 
-    @GetMapping("/{memberId}/{date}")
-    @Operation(summary = "일기 요청", description = "특정날짜 기준 일기 요청")
-    public ApiResponse<DiaryResponseDTO.DiaryGetResponseDTO> getDiary
-            (@PathVariable("memberId") Long id,
-             @PathVariable("date") LocalDate date){
-        System.out.println("GET api/diary/{memberId}/{date}");
-        return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(id,date));
+    @GetMapping("/{date}")
+    @Operation(summary = "일기 날짜기준 요청 요청", description = "특정날짜 기준 일기 요청")
+    public ApiResponse<SimpleDiaryDTO> getDiary
+            (@PathVariable("date") LocalDate date,
+             @RequestHeader("Authorization") String authorization){
+        System.out.println("GET api/diary/{date}");
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(memberId,date));
+    }
+
+    @GetMapping("//{diaryId}")
+    @Operation(summary = "일기 Id 기준 요청", description = "일기에 저장된 ID기준으로 요청(달력 처음에 출력할때 그걸 리스트로 넣어놓을 거임))")
+    public ApiResponse<SimpleDiaryDTO> getDiary
+            (@PathVariable("diaryId") Long diaryId,
+             @RequestHeader("Authorization") String authorization){
+        System.out.println("GET api/diary/{diaryId}");
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryQueryService.getDiaryById(memberId,diaryId));
+    }
+
+    @PostMapping("/save")
+    @Operation(summary = "일기 저장", description = "일기 내용이 마음에 들때 저장요청")
+    public ApiResponse<SimpleDiaryDTO> saveDiary(
+            @Valid @RequestBody DiarySaveDTO diaryDTO,
+            @RequestPart(value = "image", required = false) List<MultipartFile> image,
+            @RequestHeader("Authorization") String authorization){
+        System.out.println("POST api/diary/save");
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryCommandService.saveDiary(diaryDTO,memberId,image));
+    }
+
+    @DeleteMapping("/{diaryId}")
+    @Operation(summary = "일기삭제")
+    public ApiResponse<SimpleDiaryDTO> deleteDiary(
+            @PathVariable("diaryId") Long diaryId,
+            @RequestHeader("Authorization") String authorization) {
+        System.out.println("DELETE api/diary/{diaryId}");
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryCommandService.deleteDiary(diaryId,memberId));
+    }
+
+    @PatchMapping("")
+    @Operation(summary = "일기수정")
+    public ApiResponse<SimpleDiaryDTO> updateDiary(
+            @Valid @RequestBody DiaryUpdateDTO diaryDTO,
+            @RequestPart(value = "image", required = false) List<MultipartFile> image,
+            @RequestHeader("Authorization") String authorization
+    ){
+        System.out.println("PATCH api/diary");
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryCommandService.updateDiary(diaryDTO,memberId,image));
+    }
+
+    @GetMapping("/calendar")
+    @Operation(summary = "특정 년월 달력 요청")
+    @Parameters({
+            @Parameter(name = "year", description = "년도"),
+            @Parameter(name = "month", description = "월")
+    })
+    public ApiResponse<List<DiaryCallendarDTO>> getDiaryCalendar(
+            @RequestParam("year") @NotNull int year,
+            @RequestParam("month") int month,
+            @RequestHeader("Authorization") String authorization
+    ){
+        System.out.println("GET api/diary/calendar");
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryQueryService.getDiaryCalendar(year,month,memberId));
     }
 
 }

@@ -84,4 +84,9 @@ public class MemberInfo extends BaseEntity {
     private List<EmotionNote> emotionNoteList = new ArrayList<>();
 
     public void encodePassword(String password) { this.password = password; }
+
+    public void removeDiary(DailyDiary diary) {
+        this.dailyDiaryList.remove(diary); // 컬렉션에서 삭제
+        diary.setMemberInfo(null); // 연관관계 해제
+    }
 }

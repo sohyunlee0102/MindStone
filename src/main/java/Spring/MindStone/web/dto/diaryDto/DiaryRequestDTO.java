@@ -24,7 +24,6 @@ public class DiaryRequestDTO {
         private Long id;          // Optional: 사용자 ID
         @NotNull
         private LocalDate date;
-
     }
 }
 
