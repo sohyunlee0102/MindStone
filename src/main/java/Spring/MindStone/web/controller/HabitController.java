@@ -34,7 +34,8 @@ public class HabitController {
 
     @PostMapping
     @Operation(summary = "습관 추가 API", description = "새로운 습관을 생성하는 API 입니다." +
-            "HabitColor의 경우 PURPLE, ORANGE, BLUE, GRAY, GREEN, YELLOW, PINK 중 하나로 입력해주시면 됩니다.")
+            "HabitColor의 경우 PURPLE, ORANGE, BLUE, GRAY, GREEN, YELLOW, PINK 중 하나로 입력해주시면 됩니다." +
+            "각 필드의 대한 설명은 아래 HabitDto를 참고해주세요.")
     public ApiResponse<HabitResponseDto.HabitDTO> createHabit(@Valid @RequestBody HabitRequestDto.HabitDto request,
                                                               @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);

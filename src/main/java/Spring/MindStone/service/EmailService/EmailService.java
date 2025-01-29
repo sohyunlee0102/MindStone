@@ -84,8 +84,10 @@ public class EmailService {
     public void sendVerificationCode(String email, String verificationCode) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("[마인드스톤] 인증번호");
-        message.setText("인증번호: " + verificationCode);
+        message.setSubject("마인드 스톤 회원가입 인증번호 안내");
+        message.setText("안녕하세요.\n마인드 스톤을 이용해 주셔서 감사합니다.\n아래의 인증번호를 입력하여 회원가입을 완료해 주세요.\n\n" +
+                "인증번호: " + verificationCode + "\n\n해당 인증번호는 5분 후에 만료됩니다. 5분 내로 입력하여 주시기 바랍니다.\n" +
+                "궁금한 사항이 있으시면 고객센터로 문의해 주세요.\n\n감사합니다.\n마인드 스톤 드림");
 
         mailSender.send(message);
     }
