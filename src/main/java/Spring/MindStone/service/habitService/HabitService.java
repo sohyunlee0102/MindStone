@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,7 @@ public class HabitService {
     }
 
     @Transactional
-    public HabitResponseDto.HabitDTO updateHabit(HabitRequestDto.HabitDto request, Long memberId) {
+    public HabitResponseDto.HabitDTO updateHabit(HabitRequestDto.HabitUpdateDto request, Long memberId) {
         Habit habit = habitRepository.findById(request.getHabitId())
                 .orElseThrow(() -> new HabitHandler(ErrorStatus.HABIT_NOT_FOUND));
 
@@ -76,6 +77,43 @@ public class HabitService {
         if (request.getHabitColor() != null) habit.setHabitColor(request.getHabitColor());
 
         return new HabitResponseDto.HabitDTO(habit.getId(), LocalDateTime.now());
+    }
+
+    @Transactional
+    public List<HabitResponseDto.GetHabitForNowDTO> getHabitsForNow(Long memberId) {
+        LocalDateTime now = LocalDateTime.now();
+        int todayIndex = now.getDayOfWeek().getValue() % 7;
+        LocalTime currentTime = now.toLocalTime();
+
+        List<Habit> habits = habitRepository.findByMemberInfoId(memberId);
+
+        return habits.stream()
+                .filter(habit -> isTodayHabit(habit.getDayOfWeek(), todayIndex) &&
+                        isAlarmTimeValid(habit.getAlarmTime(), habit.getTargetTime(), currentTime))
+                .map(habit -> new HabitResponseDto.GetHabitForNowDTO(
+                        habit.getId(),
+                        habit.getTitle(),
+                        habit.getTargetTime()))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isTodayHabit(String dayOfWeek, int todayIndex) {
+        return dayOfWeek.length() == 7 && dayOfWeek.charAt(todayIndex) == '1';
+    }
+
+    private boolean isAlarmTimeValid(String alarmTime, int targetTime, LocalTime currentTime) {
+        if (alarmTime == null || alarmTime.isEmpty()) return false;
+
+        String[] times = alarmTime.split("/");
+        for (String time : times) {
+            LocalTime habitTime = LocalTime.parse(time);
+            LocalTime habitEndTime = habitTime.plusMinutes(targetTime);
+
+            if (!currentTime.isBefore(habitTime) && currentTime.isBefore(habitEndTime)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

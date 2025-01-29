@@ -35,4 +35,14 @@ public class HabitResponseDto {
         HabitColor habitColor;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetHabitForNowDTO {
+        Long habitId;
+        String title;
+        Integer targetTime;
+    }
+
 }

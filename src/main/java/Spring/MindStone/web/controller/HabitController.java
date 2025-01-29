@@ -43,10 +43,18 @@ public class HabitController {
 
     @PatchMapping
     @Operation(summary = "습관 수정 API", description = "습관을 수정하는 API 입니다.")
-    public ApiResponse<HabitResponseDto.HabitDTO> updateHabit(@RequestBody HabitRequestDto.HabitDto request,
+    public ApiResponse<HabitResponseDto.HabitDTO> updateHabit(@RequestBody HabitRequestDto.HabitUpdateDto request,
                                                               @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
         return ApiResponse.onSuccess(habitService.updateHabit(request, memberId));
     }
 
+    @GetMapping("/home")
+    @Operation(summary = "홈 화면에 습관 띄우기 API", description = "유저가 설정한 시간이 되었을 때 해당 습관을 홈 화면에 띄우는 API 입니다.")
+    public ApiResponse<List<HabitResponseDto.GetHabitForNowDTO>> getHabitsForNow (
+            @RequestHeader("Authorization") String authorization) {
+
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(habitService.getHabitsForNow(memberId));
+    }
 }
