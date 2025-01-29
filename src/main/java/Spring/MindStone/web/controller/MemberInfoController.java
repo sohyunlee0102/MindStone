@@ -3,8 +3,8 @@ package Spring.MindStone.web.controller;
 import Spring.MindStone.apiPayload.ApiResponse;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
 import Spring.MindStone.domain.member.MemberInfo;
-import Spring.MindStone.web.dto.memberInfoDto.MemberInfoRequestDTO;
-import Spring.MindStone.web.dto.memberInfoDto.MemberInfoResponseDTO;
+import Spring.MindStone.web.dto.memberDto.MemberInfoRequestDTO;
+import Spring.MindStone.web.dto.memberDto.MemberInfoResponseDTO;
 import Spring.MindStone.service.MemberInfoService.MemberInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,10 +27,6 @@ public class MemberInfoController {
 
     @PostMapping
     @Operation(summary = "회원가입 API", description = "유저 회원가입을 처리하는 API 입니다.")
-    @Parameters({
-            @Parameter(name = "email", description = "유저의 이메일, Request Body 입니다!"),
-            @Parameter(name = "password", description = "유저의 비밀번호, Request Body 입니다!")
-    })
     public ApiResponse<MemberInfoResponseDTO.JoinResultDTO> join(@Valid @RequestBody MemberInfoRequestDTO.JoinDto request) {
         return ApiResponse.onSuccess(memberInfoService.joinMember(request));
     }
@@ -48,7 +44,7 @@ public class MemberInfoController {
     public ApiResponse<Map<Long, LocalDateTime>> patchNickname(@Valid @RequestBody MemberInfoRequestDTO.NicknameDto request,
                                                @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-        return ApiResponse.onSuccess(Map.of(memberInfoService.patchNickname(request, memberId), LocalDateTime.now()));
+        return ApiResponse.onSuccess(Map.of(memberInfoService.updateNickname(request, memberId), LocalDateTime.now()));
     }
 
     @PatchMapping("/password")
@@ -56,7 +52,7 @@ public class MemberInfoController {
     public ApiResponse<Map<Long, LocalDateTime>> patchPassword(@Valid @RequestBody MemberInfoRequestDTO.PasswordDto request,
                                            @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-        return ApiResponse.onSuccess(Map.of(memberInfoService.patchPassword(request, memberId), LocalDateTime.now()));
+        return ApiResponse.onSuccess(Map.of(memberInfoService.updatePassword(request, memberId), LocalDateTime.now()));
     }
 
 }

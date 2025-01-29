@@ -3,7 +3,7 @@ package Spring.MindStone.config.security;
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
 import Spring.MindStone.domain.member.MemberInfo;
-import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
+import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
