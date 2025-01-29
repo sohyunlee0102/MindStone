@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/diary")
@@ -53,7 +54,7 @@ public class DiaryRestController {
 
     @GetMapping("/{memberId}/{date}")
     @Operation(summary = "일기 요청", description = "특정날짜 기준 일기 요청")
-    public ApiResponse<DiaryResponseDTO.DiaryGetResponseDTO> getDiary
+    public ApiResponse<SimpleDiaryDTO> getDiary
             (@PathVariable("memberId") Long id,
              @PathVariable("date") LocalDate date){
         System.out.println("GET api/diary/{memberId}/{date}");
@@ -64,7 +65,7 @@ public class DiaryRestController {
     @Operation(summary = "일기 저장", description = "일기 내용이 마음에 들때 저장요청")
     public ApiResponse<SimpleDiaryDTO> saveDiary(
             @Valid @RequestBody DiarySaveDTO diaryDTO,
-            @RequestPart(value = "image", required = false) MultipartFile image,
+            @RequestPart(value = "image", required = false) List<MultipartFile> image,
             @RequestHeader("Authorization") String authorization){
         System.out.println("POST api/diary/save");
         Long memberId = JwtTokenUtil.extractMemberId(authorization);

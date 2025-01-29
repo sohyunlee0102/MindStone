@@ -1,13 +1,17 @@
 package Spring.MindStone.domain.diary;
 
+import Spring.MindStone.domain.enums.EmotionList;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.domain.common.BaseEntity;
+import Spring.MindStone.domain.member.MemberInterest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,6 +20,7 @@ import java.time.LocalDate;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Setter
 public class DailyDiary extends BaseEntity {
 
     @Id
@@ -28,6 +33,10 @@ public class DailyDiary extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private MemberInfo memberInfo; // 본인 (Member 테이블의 ID 참조)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true, length = 10)
+    private EmotionList emotion; // 감정 (Enum)
 
     @Column(nullable = false, length = 100)
     private String impressiveThing; // 인상 깊은 일
@@ -43,6 +52,9 @@ public class DailyDiary extends BaseEntity {
 
     @Column(nullable = true, length = 255)
     private String imagePath; // 이미지 경로
+
+    @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DiaryImage> diaryImageList = new ArrayList<>();
 
     public void update(){
 

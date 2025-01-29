@@ -14,6 +14,8 @@ public class DiarySaveDTO {
 
     private String title; // 일기 제목
 
+    private String emotion;//일기에 관한 감정
+
     private String content; // 일기 내용
 
     private String impressiveThing; // 인상 깊은 일

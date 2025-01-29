@@ -1,10 +1,16 @@
 package Spring.MindStone.service.DiaryService;
 
+import Spring.MindStone.apiPayload.code.status.ErrorStatus;
+import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.diary.DailyDiary;
+import Spring.MindStone.domain.diary.DiaryImage;
 import Spring.MindStone.domain.emotion.EmotionNote;
 import Spring.MindStone.domain.member.MemberInfo;
+import Spring.MindStone.repository.DiaryRepository.DiaryImageRepository;
 import Spring.MindStone.repository.DiaryRepository.DiaryRepository;
+import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
 import Spring.MindStone.service.EmotionNoteService.EmotionNoteQueryService;
+import Spring.MindStone.service.FileService;
 import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import Spring.MindStone.web.dto.diaryDto.DiarySaveDTO;
 import Spring.MindStone.web.dto.diaryDto.SimpleDiaryDTO;
@@ -30,7 +36,12 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
 
     private final EmotionNoteQueryService emotionNoteService;
+    private final DiaryQueryService diaryQueryService;
     private final DiaryRepository diaryRepository;
+    private final MemberInfoRepository memberInfoRepository;
+    private final FileService fileService;
+    private final DiaryImageRepository diaryImageRepository;
+    private final DiaryQueryServiceImpl diaryQueryServiceImpl;
 
     @Value("${openai.secret-key}")
     private String SECRET_KEY;
@@ -139,20 +150,72 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         return result.getChoices().get(0).getMessage().getContent();
     }
 
+    public SimpleDiaryDTO updateDiary(DiarySaveDTO saveDTO, Long memberId,List<MultipartFile> image){
+        MemberInfo memberInfo = memberInfoRepository.findById(memberId)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        DailyDiary diary =diaryRepository.findDailyDiaryByDate(memberId, LocalDate.now())
+                .orElseThrow(() ->new MemberInfoHandler(ErrorStatus.DIARY_NOT_FOUND));
+
+        List<DiaryImage> diaryImageList = diary.getDiaryImageList();
+
+        //1. 이미지 리스트의 aws와 레포에서 삭제
+        for(DiaryImage diaryImage : diaryImageList ){
+            fileService.deleteFile(diaryImage.getImagePath());
+            //diaryImageRepository.delete(diaryImage);
+        }
+        //diary repo에서도 밀어버리기, orphan true라 claer하면 다 지워짐
+        diary.getDiaryImageList().clear();
+
+        //새로 바뀐 이미지 리스트 저장
+        diary.setDiaryImageList(setAwsStore(diary, image));
+
+        //바뀐 내용 반영
+        diaryRepository.save(diary);
+
+        return new SimpleDiaryDTO(diary);
+    }
+
     @Override
-    public SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, MemberInfo memberInfo, MultipartFile image){
-        //이미지 받아오는거 설정해야함!
+    public SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId,List<MultipartFile> image){
+        MemberInfo memberInfo = memberInfoRepository.findById(memberId)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        //이미지만 설정안했음!
         DailyDiary diary = DailyDiary.builder()
                 .date(saveDTO.getDate())
+                .emotion()
                 .memberInfo(memberInfo)
                 .impressiveThing(saveDTO.getImpressiveThing())
                 .title(saveDTO.getTitle())
                 .content(saveDTO.getContent())
-                .imagePath(image.toString()).build();
+                .build();
 
+
+        //diary에 이미지 리스트들 저장
+        diary.setDiaryImageList(setAwsStore(diary, image));
+
+        //일기 레포에 일기 저장
         diaryRepository.save(diary);
 
         return new SimpleDiaryDTO(diary);
+    }
+
+    public List<DiaryImage> setAwsStore(DailyDiary diary,List<MultipartFile> image){
+
+        //diary에 이미지들 매핑시키기 위한 list
+        List<DiaryImage> diaryImageList = new ArrayList<>();
+
+        for(int i = 0;i<image.size();i++){
+            DiaryImage diaryImage = DiaryImage.builder()
+                    .imagePath(fileService.uploadFile(image.get(i)))//이 부분이 aws
+                    .imageOrder(i)
+                    .diary(diary).build();
+            //diaryImageRepo에 먼저 저장
+            diaryImageList.add(diaryImage);
+            diaryImageRepository.save(diaryImage);
+        }
+
+        return diaryImageList;
     }
 
 }

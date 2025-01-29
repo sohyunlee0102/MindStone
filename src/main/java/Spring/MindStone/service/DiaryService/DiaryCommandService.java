@@ -8,6 +8,7 @@ import Spring.MindStone.web.dto.diaryDto.SimpleDiaryDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface DiaryCommandService {
     /** 일기 자동생성 **/
@@ -20,6 +21,6 @@ public interface DiaryCommandService {
 
 
     /** 일기 저장 **/
-    SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId, MultipartFile image);
+    SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId, List<MultipartFile> imageList);
 
 }
