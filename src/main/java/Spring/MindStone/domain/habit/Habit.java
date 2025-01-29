@@ -1,4 +1,5 @@
 package Spring.MindStone.domain.habit;
+import Spring.MindStone.domain.enums.HabitColor;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.domain.common.BaseEntity;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @DynamicUpdate
 @DynamicInsert
@@ -26,9 +28,6 @@ public class Habit extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String title; // 제목
 
-    @Column(nullable = false)
-    private Integer alarmInterval; // 알람 간격
-
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive;   //알람 활성화
 
@@ -40,5 +39,9 @@ public class Habit extends BaseEntity {
 
     @Column(nullable = false)
     private Integer targetTime; //목표 시간
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private HabitColor habitColor; // 습관 별 색깔
 
 }

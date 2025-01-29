@@ -3,9 +3,9 @@ package Spring.MindStone.service.MemberInfoService;
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.member.MemberInfo;
-import Spring.MindStone.web.dto.memberInfoDto.MemberInfoRequestDTO;
-import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
-import Spring.MindStone.web.dto.memberInfoDto.MemberInfoResponseDTO;
+import Spring.MindStone.web.dto.memberDto.MemberInfoRequestDTO;
+import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
+import Spring.MindStone.web.dto.memberDto.MemberInfoResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -89,7 +89,7 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public Long patchNickname(MemberInfoRequestDTO.NicknameDto request, Long memberId) {
+    public Long updateNickname(MemberInfoRequestDTO.NicknameDto request, Long memberId) {
         MemberInfo member = memberInfoRepository.findById(memberId)
                 .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
         member.setNickname(request.getNickname());
@@ -97,7 +97,7 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public Long patchPassword(MemberInfoRequestDTO.PasswordDto request, Long memberId) {
+    public Long updatePassword(MemberInfoRequestDTO.PasswordDto request, Long memberId) {
         MemberInfo member = memberInfoRepository.findById(memberId)
                 .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
 
