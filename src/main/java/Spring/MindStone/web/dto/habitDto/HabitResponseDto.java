@@ -1,5 +1,8 @@
 package Spring.MindStone.web.dto.habitDto;
 
+import Spring.MindStone.domain.enums.HabitColor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +19,20 @@ public class HabitResponseDto {
     public static class HabitDTO {
         Long habitId;
         LocalDateTime createdAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetHabitDTO {
+        Long habitId;
+        String title;
+        String dayOfWeek;
+        String alarmTime;
+        Integer targetTime;
+        Boolean isActive;
+        HabitColor habitColor;
     }
 
 }

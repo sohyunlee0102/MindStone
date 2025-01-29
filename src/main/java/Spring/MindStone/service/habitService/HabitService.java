@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,22 @@ public class HabitService {
 
     private final HabitRepository habitRepository;
     private final MemberInfoRepository memberInfoRepository;
+
+    @Transactional
+    public List<HabitResponseDto.GetHabitDTO> getAllHabits(Long memberId) {
+        List<Habit> habits = habitRepository.findByMemberInfoId(memberId);
+
+        return habits.stream().map(habit ->
+                new HabitResponseDto.GetHabitDTO(
+                        habit.getId(),
+                        habit.getTitle(),
+                        habit.getDayOfWeek(),
+                        habit.getAlarmTime(),
+                        habit.getTargetTime(),
+                        habit.getIsActive(),
+                        habit.getHabitColor()
+                )).collect(Collectors.toList());
+    }
 
     @Transactional
     public HabitResponseDto.HabitDTO createHabit(HabitRequestDto.HabitDto request, Long memberId) {

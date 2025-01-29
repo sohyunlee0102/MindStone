@@ -14,12 +14,23 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/habits")
 public class HabitController {
 
     private final HabitService habitService;
+
+    @GetMapping
+    @Operation(summary = "사용자의 모든 습관 조회 API", description = "사용자의 전체 습관 목록을 조회하는 API 입니다.")
+    public ApiResponse<List<HabitResponseDto.GetHabitDTO>> getAllHabits(
+            @RequestHeader("Authorization") String authorization) {
+
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(habitService.getAllHabits(memberId));
+    }
 
     @PostMapping
     @Operation(summary = "습관 추가 API", description = "새로운 습관을 생성하는 API 입니다." +
