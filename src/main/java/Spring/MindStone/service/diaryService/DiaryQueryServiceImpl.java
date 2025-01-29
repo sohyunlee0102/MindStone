@@ -4,7 +4,7 @@ import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.repository.diaryRepository.DiaryRepository;
-import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
+import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import Spring.MindStone.web.dto.diaryDto.DiaryCallendarDTO;
 import Spring.MindStone.web.dto.diaryDto.SimpleDiaryDTO;
 import lombok.RequiredArgsConstructor;

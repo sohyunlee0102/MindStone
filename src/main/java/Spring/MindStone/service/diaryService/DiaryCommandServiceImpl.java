@@ -9,7 +9,7 @@ import Spring.MindStone.domain.enums.EmotionList;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.repository.diaryRepository.DiaryImageRepository;
 import Spring.MindStone.repository.diaryRepository.DiaryRepository;
-import Spring.MindStone.repository.memberInfoRepository.MemberInfoRepository;
+import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import Spring.MindStone.service.emotionNoteService.EmotionNoteQueryService;
 import Spring.MindStone.service.FileService;
 import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
