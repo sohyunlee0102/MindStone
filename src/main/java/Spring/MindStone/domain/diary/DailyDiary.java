@@ -4,6 +4,7 @@ import Spring.MindStone.domain.enums.EmotionList;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.domain.common.BaseEntity;
 import Spring.MindStone.domain.member.MemberInterest;
+import Spring.MindStone.web.dto.diaryDto.DiaryUpdateDTO;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -50,13 +52,17 @@ public class DailyDiary extends BaseEntity {
     /*@Column(nullable = false)
     private Boolean isPublic; // 공개 여부*/
 
-    @Column(nullable = true, length = 255)
-    private String imagePath; // 이미지 경로
+    /*@Column(nullable = true, length = 255)
+    private String imagePath; // 이미지 경로*/
 
     @OneToMany(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DiaryImage> diaryImageList = new ArrayList<>();
 
-    public void update(){
-
+    public void update(DiaryUpdateDTO updateDTO) {
+        if(updateDTO == null) return;
+        if(Objects.isNull(updateDTO.getEmotion()) || updateDTO.getEmotion().isBlank())return;
+        emotion = EmotionList.fromString(updateDTO.getEmotion());
+        if(Objects.isNull(updateDTO.getContent()) || updateDTO.getContent().isBlank())return;
+        content = updateDTO.getContent();
     }
 }
