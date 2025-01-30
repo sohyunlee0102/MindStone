@@ -116,4 +116,23 @@ public class HabitService {
         return false;
     }
 
+
+    // 리스트 형태로 여러 개의 습관 생성
+    @Transactional
+    public void createHabits(List<HabitRequestDto.HabitDto> habitDtos, MemberInfo memberInfo) {
+        for (HabitRequestDto.HabitDto habitDto : habitDtos) {
+            Habit habit = Habit.builder()
+                    .memberInfo(memberInfo)
+                    .title(habitDto.getTitle())
+                    .dayOfWeek(habitDto.getDayOfWeek())
+                    .alarmTime(habitDto.getAlarmTime())
+                    .targetTime(habitDto.getTargetTime())
+                    .isActive(habitDto.getIsActive())
+                    .habitColor(habitDto.getHabitColor())
+                    .build();
+
+            habitRepository.save(habit);
+        }
+    }
+
 }
