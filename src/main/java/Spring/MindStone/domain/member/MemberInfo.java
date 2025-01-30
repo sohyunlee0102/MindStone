@@ -5,9 +5,9 @@ import Spring.MindStone.domain.common.BaseEntity;
 import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.domain.enums.Job;
 import Spring.MindStone.domain.enums.MBTI;
+import Spring.MindStone.domain.enums.Role;
 import Spring.MindStone.domain.enums.Status;
 import Spring.MindStone.domain.habit.Habit;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -19,13 +19,12 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-
-@Schema(description = "회원 정보 관리 엔티티")
 public class MemberInfo extends BaseEntity {
 
     @Id
@@ -65,6 +64,10 @@ public class MemberInfo extends BaseEntity {
     @Column(nullable = false)
     private Boolean marketingAgree; // 서비스 동의 여부
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 15, columnDefinition = "VARCHAR(15) DEFAULT 'USER'")
+    private Role role;
+
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberInterest> memberInterestList = new ArrayList<>();
 
@@ -80,4 +83,10 @@ public class MemberInfo extends BaseEntity {
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmotionNote> emotionNoteList = new ArrayList<>();
 
+    public void encodePassword(String password) { this.password = password; }
+
+    public void removeDiary(DailyDiary diary) {
+        this.dailyDiaryList.remove(diary); // 컬렉션에서 삭제
+        diary.setMemberInfo(null); // 연관관계 해제
+    }
 }
