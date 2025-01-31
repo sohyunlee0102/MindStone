@@ -23,19 +23,6 @@ public class MemberInterest extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private MemberInfo memberInfo; // 회원 ID (FK, Member와 관계 설정)
 
-    /*@Column(nullable = false)
-    private Integer actionID; // 행동 번호(취미, 특기, 스트레스 풀이)
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String action; // 행동 (텍스트)
-
-    @Column(nullable = false,columnDefinition = "INTEGER DEFAULT 0")
-    private Integer actionNum = 0; // 행동 횟수(회원이 얼마나 이 행동을 택했는지)*/
-
-
-    // 취미 선택 항목들
-    /*@ElementCollection -> 테이블 분기를 통한 유연한 관리 고려
-    @CollectionTable("")*/
     @Column(name = "hobby_actions")
     private String hobbyActions;   // 취미 행동 (운동, 독서 등)
 

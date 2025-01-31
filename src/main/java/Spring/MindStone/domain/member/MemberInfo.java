@@ -69,7 +69,7 @@ public class MemberInfo extends BaseEntity {
     private Role role;
 
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberInterest> memberInterestList = new ArrayList<>();
+    private List<MemberInterest> memberInterestList = new ArrayList<>();        // 유저 관심사 리스트
 
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DailyDiary> dailyDiaryList = new ArrayList<>();
