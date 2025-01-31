@@ -3,7 +3,7 @@ package Spring.MindStone.domain.enums;
 import java.util.Arrays;
 
 public enum EmotionList {
-    ANGER, DEPRESSION, SAD, JOY, THRILL, HAPPINESS;
+    ANGER, DEPRESSION, SAD, CALM, JOY, THRILL, HAPPINESS;
 
     public static EmotionList fromString(String emotion) {
         return Arrays.stream(values()) // ✅ 배열을 Stream으로 변환
