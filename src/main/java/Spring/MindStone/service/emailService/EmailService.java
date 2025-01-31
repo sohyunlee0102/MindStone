@@ -51,8 +51,11 @@ public class EmailService {
     public void sendTemporaryPassword(String email, String temporaryPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
-        message.setSubject("[마인드스톤] 임시 비밀번호");
-        message.setText("임시 비밀번호: " + temporaryPassword);
+        message.setSubject("마인드 스톤 비밀번호 재설정 안내");
+        message.setText("안녕하세요.\n 마인드 스톤을 이용해 주셔서 감사합니다.\n아래의 임시 비밀번호를 사용하여 " +
+                "로그인하신 후, 새로운 비밀번호로 변경해 주세요.\n\n" +
+                "인증 비밀번호: " + temporaryPassword + "\n\n보안을 위해 임시 비밀번호 사용 후 반드시 새로운 " +
+                "비밀번호로 변경해주시길 바랍니다.\n궁금한 사항이 있으시면 고객센터로 문의해 주세요.\n\n감사합니다.\n마인드 스톤 드림");
 
         mailSender.send(message);
     }
