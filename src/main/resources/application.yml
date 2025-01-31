@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${LOCAL_DB_ADDRESS}
+    url: ${AWS_DB_ADDRESS}
     username: root
-    password: ${LOCAL_DB_PASSWORD}
+    password: ${AWS_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   sql:
     init:
