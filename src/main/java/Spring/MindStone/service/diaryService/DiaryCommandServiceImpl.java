@@ -12,6 +12,7 @@ import Spring.MindStone.repository.diaryRepository.DiaryRepository;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import Spring.MindStone.service.emotionNoteService.EmotionNoteQueryService;
 import Spring.MindStone.service.FileService;
+import Spring.MindStone.service.memberInfoService.MemberInfoService;
 import Spring.MindStone.web.dto.diaryDto.DiaryResponseDTO;
 import Spring.MindStone.web.dto.diaryDto.DiarySaveDTO;
 import Spring.MindStone.web.dto.diaryDto.DiaryUpdateDTO;
@@ -41,6 +42,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     private final DiaryQueryService diaryQueryService;
     private final DiaryRepository diaryRepository;
     private final MemberInfoRepository memberInfoRepository;
+    private final MemberInfoService memberInfoService;
     private final FileService fileService;
     private final DiaryImageRepository diaryImageRepository;
     private final DiaryQueryServiceImpl diaryQueryServiceImpl;
@@ -187,8 +189,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
     @Override
     public SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId,List<MultipartFile> image){
-        MemberInfo memberInfo = memberInfoRepository.findById(memberId)
-                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
 
         //이미지만 설정안했음!
         DailyDiary diary = DailyDiary.builder()
@@ -211,8 +212,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     }
 
     public SimpleDiaryDTO deleteDiary(Long id, Long memberId){
-        MemberInfo memberInfo = memberInfoRepository.findById(memberId)
-                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
         DailyDiary diary =diaryRepository.findDailyDiaryByDate(memberId, LocalDate.now())
                 .orElseThrow(() ->new MemberInfoHandler(ErrorStatus.DIARY_NOT_FOUND));
 
