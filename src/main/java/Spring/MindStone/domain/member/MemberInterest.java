@@ -8,7 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
-@Builder
+@Setter  // Lombok을 활용하여 Setter 자동 생성 (수정 기능을 위해 추가)
 @DynamicUpdate
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,4 +40,15 @@ public class MemberInterest extends BaseEntity {
 
     @Column(name = "stress_actions_count")
     private Integer stressActionsCount; // 스트레스 풀이 선택 횟수
+
+    /**
+     * 감정 관리 방법 정보 업데이트 메서드
+     * - 감정 관리 API에서 수정 요청이 들어올 때 사용됨
+     * - 기존 데이터에서 변경된 값만 업데이트
+     */
+    public void updateEmotionWay(String hobby, String strengths, String stressManagement) {
+        this.hobbyActions = hobby;
+        this.specialSkillActions = strengths;
+        this.stressActions = stressManagement;
+    }
 }
