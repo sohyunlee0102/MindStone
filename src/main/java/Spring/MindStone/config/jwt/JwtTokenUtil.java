@@ -89,6 +89,18 @@ public class JwtTokenUtil {
         return Long.parseLong(memberId);
     }
 
+    // 유저 이메일 추출 (온보딩 사용 - 임시)
+    public static String extractUserEmail(String token) {
+        Claims claims = validateToken(token);
+        String email = claims.getSubject();
+        if (email == null || email.isEmpty()) {
+            throw new AuthHandler(ErrorStatus.INVALID_TOKEN);  // 커스텀 예외 처리
+        }
+        return email;
+    }
+
+
+
     public static class InvalidTokenException extends RuntimeException {
         public InvalidTokenException(String message) {
             super(message);
