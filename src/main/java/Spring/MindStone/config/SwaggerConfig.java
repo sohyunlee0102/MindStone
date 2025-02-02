@@ -32,7 +32,9 @@ public class SwaggerConfig {
 
 
         return new OpenAPI()
-                .addServersItem(new Server().url("/"))
+                .addServersItem(new Server().url("http://localhost:8080"))  // 로컬 개발 환경
+                .addServersItem(new Server().url("http://15.165.241.217:8080"))  // 배포 환경
+                //.addServersItem(new Server().url("/"))
                 .info(info)
                 .addSecurityItem(securityRequirement)
                 .components(components);

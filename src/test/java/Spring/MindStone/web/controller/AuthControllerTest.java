@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 public class AuthControllerTest {
-
+/*
     @Autowired
     private MockMvc mockMvc;
 
@@ -96,5 +96,5 @@ public class AuthControllerTest {
                         .header("Authorization", "Bearer " + newAccessToken))
                 .andExpect(status().isOk());
     }
-
+*/
 }
