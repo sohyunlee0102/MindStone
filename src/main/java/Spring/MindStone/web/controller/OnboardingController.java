@@ -31,7 +31,7 @@ public class OnboardingController {
             summary = "회원 온보딩 설문(기본 정보 체크) 작성",
             description = "회원이 온보딩 정보를 작성하면 유효성 검사를 거쳐 회원 정보를 저장합니다."
     )
-    @PostMapping("/survey")
+    @PutMapping("/survey")
     /*public OnboardingResponseDto onboardSurvey(@Valid @RequestBody OnboardingRequestDto requestDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = ((MemberInfo) auth.getPrincipal()).getEmail();
@@ -41,6 +41,7 @@ public class OnboardingController {
                                                @RequestHeader("Authorization") String authorization) {
 
         // JWT 토큰에서 이메일을 추출 (임시)
+        System.out.println("Authorization : " + authorization);
         String userEmail = JwtTokenUtil.extractUserEmail(authorization);
         return onboardingService.onboardMember(requestDto, userEmail);
     }

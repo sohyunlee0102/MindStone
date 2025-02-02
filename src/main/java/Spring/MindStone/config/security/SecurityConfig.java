@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/members").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // 스웨거 api
-                        .requestMatchers("/api/test/auth/**", "/api/diary/**", "/api/members/**", "/api/habits/**", "/api/members/survey").hasRole("USER")
+                        .requestMatchers("/api/test/auth/**", "/api/diary/**", "/api/members/**", "/api/habits/**" /* "/api/members/survey"*/).hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터

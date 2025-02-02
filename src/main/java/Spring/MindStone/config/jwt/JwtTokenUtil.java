@@ -68,6 +68,7 @@ public class JwtTokenUtil {
     // 토큰 검증
     public static Claims validateToken(String token) {
         try {
+            System.out.println("Token : " + token);
             return Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token)
@@ -91,8 +92,11 @@ public class JwtTokenUtil {
 
     // 유저 이메일 추출 (온보딩 사용 - 임시)
     public static String extractUserEmail(String token) {
-        Claims claims = validateToken(token);
+        String accessToken = token.substring(7);
+        Claims claims = validateToken(accessToken);
+        System.out.println(claims.getSubject());
         String email = claims.getSubject();
+        System.out.println("Email : " + email);
         if (email == null || email.isEmpty()) {
             throw new AuthHandler(ErrorStatus.INVALID_TOKEN);  // 커스텀 예외 처리
         }

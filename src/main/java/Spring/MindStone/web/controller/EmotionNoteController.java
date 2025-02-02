@@ -1,3 +1,4 @@
+/*
 package Spring.MindStone.web.controller;
 
 import Spring.MindStone.apiPayload.ApiResponse;
@@ -44,3 +45,5 @@ public class EmotionNoteController {
 
 
 }
+
+ */

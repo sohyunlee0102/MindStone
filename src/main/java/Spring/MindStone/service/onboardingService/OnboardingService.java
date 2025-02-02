@@ -2,6 +2,7 @@ package Spring.MindStone.service.onboardingService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.code.status.SuccessStatus;
+import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import Spring.MindStone.service.habitService.HabitService;
@@ -27,6 +28,7 @@ public class OnboardingService {
      */
     public OnboardingResponseDto onboardMember(OnboardingRequestDto onboardingRequestDto, String email) { // 회원 정보 엔티티로 변환
         // 이메일 중복 체크
+        /*
         if (memberInfoRepository.existsByEmail(email)){
             // 이메일이 중복될 경우 - ErrorStatus
             return new OnboardingResponseDto(
@@ -36,6 +38,8 @@ public class OnboardingService {
                     ErrorStatus.EMAIL_ALREADY_EXISTS.getHttpStatus().name()
             );
         }
+         */
+        /*
         // 회원 정보 생성 및 저장
         MemberInfo memberInfo = MemberInfo.builder()
                 .email(email)
@@ -47,6 +51,16 @@ public class OnboardingService {
 
         memberInfoRepository.save(memberInfo);
 
+         */
+
+        MemberInfo memberInfo = memberInfoRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 기존 정보 업데이트
+        memberInfo.setNickname(onboardingRequestDto.getNickname());
+        memberInfo.setBirthday(onboardingRequestDto.getBirthDate());
+        memberInfo.setMbti(onboardingRequestDto.getMbti());
+        memberInfo.setJob(onboardingRequestDto.getJob());
 
         // 습관 저장 로직 (선택 사항)
         if (onboardingRequestDto.getHabits() != null && !onboardingRequestDto.getHabits().isEmpty()) {
