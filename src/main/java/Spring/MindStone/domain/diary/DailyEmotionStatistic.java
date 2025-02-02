@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Builder
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @AllArgsConstructor
 /*@IdClass(DailyEmotionStatisticId.class) // 복합 키 클래스 매핑*/
 public class DailyEmotionStatistic extends BaseEntity {
