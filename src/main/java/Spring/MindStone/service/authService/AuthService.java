@@ -36,7 +36,6 @@ public class AuthService {
 
             String accessToken = JwtTokenUtil.generateAccessToken(loginDto.getEmail(), memberInfoService);
             String refreshToken = JwtTokenUtil.generateRefreshToken(loginDto.getEmail(), memberInfoService);
-            System.out.println(JwtTokenUtil.getExpirationDate(refreshToken));
 
             return MemberInfoResponseDTO.LoginResponseDto.builder()
                     .email(loginDto.getEmail())

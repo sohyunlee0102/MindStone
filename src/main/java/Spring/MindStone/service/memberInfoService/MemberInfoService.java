@@ -2,17 +2,21 @@ package Spring.MindStone.service.memberInfoService;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
+import Spring.MindStone.domain.enums.Status;
 import Spring.MindStone.domain.member.MemberInfo;
+import Spring.MindStone.service.tokenBlacklistService.TokenBlacklistService;
 import Spring.MindStone.web.dto.memberDto.MemberInfoRequestDTO;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import Spring.MindStone.web.dto.memberDto.MemberInfoResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class MemberInfoService {
 
     private final MemberInfoRepository memberInfoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenBlacklistService tokenBlacklistService;
 
     // 멤버 등록
     @Transactional
@@ -90,22 +95,41 @@ public class MemberInfoService {
 
     @Transactional
     public Long updateNickname(MemberInfoRequestDTO.NicknameDto request, Long memberId) {
-        MemberInfo member = memberInfoRepository.findById(memberId)
-                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        MemberInfo member = findMemberById(memberId);
         member.setNickname(request.getNickname());
         return memberInfoRepository.save(member).getId();
     }
 
     @Transactional
     public Long updatePassword(MemberInfoRequestDTO.PasswordDto request, Long memberId) {
-        MemberInfo member = memberInfoRepository.findById(memberId)
-                .orElseThrow(() -> new MemberInfoHandler(ErrorStatus.MEMBER_NOT_FOUND));
+        MemberInfo member = findMemberById(memberId);
 
         if (!passwordEncoder.matches(request.getOldPassword(), member.getPassword())) {
             throw new MemberInfoHandler(ErrorStatus.INVALID_PASSWORD);
         }
         member.setPassword(passwordEncoder.encode(request.getNewPassword()));
         return memberInfoRepository.save(member).getId();
+    }
+
+    @Transactional
+    public void deactivateMember(Long memberId, String refreshToken) {
+        MemberInfo member = findMemberById(memberId);
+
+        member.setStatus(Status.INACTIVE);
+        member.setInactiveDate(LocalDate.now());
+
+        tokenBlacklistService.addToBlackList(refreshToken);
+
+        memberInfoRepository.save(member);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void deleteInactiveMembers() {
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+        List<MemberInfo> membersToDelete = memberInfoRepository.findByStatusAndInactiveDateBefore(Status.INACTIVE, thirtyDaysAgo);
+
+        memberInfoRepository.deleteAll(membersToDelete);
     }
 
 }
