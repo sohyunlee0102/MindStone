@@ -22,7 +22,7 @@ public class EmotionWayController {
     /**
      * 감정 관리 방법 조회
      */
-    /*
+
     @GetMapping
     @Operation(summary = "감정 관리 방법 조회 API", description = "회원 ID를 이용해 감정 관리 방법을 조회합니다.")
     public ApiResponse<EmotionWayResponseDto> getEmotionWay(
@@ -31,12 +31,10 @@ public class EmotionWayController {
         return ApiResponse.onSuccess(emotionWayService.getEmotionWay(memberId));
     }
 
-     */
-
     /**
      * 감정 관리 방법 수정
      */
-    /*
+
     @PutMapping
     @Operation(summary = "감정 관리 방법 수정 API", description = "회원 ID를 이용해 감정 관리 방법을 수정합니다.")
     public ApiResponse<String> updateEmotionWay(
@@ -48,5 +46,5 @@ public class EmotionWayController {
         return ApiResponse.onSuccess("감정 관리 방법이 성공적으로 수정되었습니다.");
     }
     
-     */
+
 }

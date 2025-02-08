@@ -4,6 +4,7 @@ import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
 import Spring.MindStone.service.memberInfoService.MemberInfoService;
+import Spring.MindStone.service.tokenBlacklistService.TokenBlacklistService;
 import Spring.MindStone.web.dto.memberDto.MemberInfoRequestDTO;
 import Spring.MindStone.web.dto.memberDto.MemberInfoResponseDTO;
 import jakarta.transaction.Transactional;
@@ -23,6 +24,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final MemberInfoService memberInfoService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     // 로그인 및 JWT 토큰 발급
     @Transactional
@@ -34,6 +36,7 @@ public class AuthService {
 
             String accessToken = JwtTokenUtil.generateAccessToken(loginDto.getEmail(), memberInfoService);
             String refreshToken = JwtTokenUtil.generateRefreshToken(loginDto.getEmail(), memberInfoService);
+            System.out.println(JwtTokenUtil.getExpirationDate(refreshToken));
 
             return MemberInfoResponseDTO.LoginResponseDto.builder()
                     .email(loginDto.getEmail())
@@ -49,6 +52,11 @@ public class AuthService {
     // accessToken 재발급
     @Transactional
     public MemberInfoResponseDTO.LoginResponseDto refreshAccessToken(String refreshToken, String email) {
+
+        if (tokenBlacklistService.isTokenBlacklisted(refreshToken)) {
+            throw new AuthHandler(ErrorStatus.LOGOUT_TOKEN);
+        }
+
         try {
             JwtTokenUtil.validateToken(refreshToken);
         } catch (JwtTokenUtil.InvalidTokenException e) {
