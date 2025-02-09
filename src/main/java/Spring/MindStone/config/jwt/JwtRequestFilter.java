@@ -1,5 +1,8 @@
 package Spring.MindStone.config.jwt;
 
+import Spring.MindStone.apiPayload.code.status.ErrorStatus;
+import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
+import Spring.MindStone.service.tokenBlacklistService.TokenBlacklistService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,6 +25,7 @@ import java.io.IOException;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -34,6 +38,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
+
+            if (tokenBlacklistService.isTokenBlacklisted(token)) {
+                throw new AuthHandler(ErrorStatus.LOGOUT_TOKEN);
+            }
+
             try {
                 Claims claims = JwtTokenUtil.validateToken(token);
                 username = claims.getSubject();

@@ -52,7 +52,7 @@ public class MemberInfoRequestDTO {
     public static class RefreshTokenDTO {
 
         @NotNull
-        private String refreshToken;
+        String refreshToken;
         @NotBlank
         @Email
         String email;
@@ -90,6 +90,13 @@ public class MemberInfoRequestDTO {
         String oldPassword;
         @NotBlank
         String newPassword;
+    }
+
+    @Getter
+    @Setter
+    public static class LogoutDto {
+        @NotNull
+        String refreshToken;
     }
 
 }

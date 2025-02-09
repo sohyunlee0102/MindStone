@@ -2,6 +2,8 @@ package Spring.MindStone.config.security;
 
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.AuthHandler;
+import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
+import Spring.MindStone.domain.enums.Status;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +20,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username);
-        MemberInfo memberInfo = memberInfoRepository.findByEmail(username)
-                .orElseThrow(() -> new AuthHandler(ErrorStatus.AUTHENTICATION_FAILED));
 
-         System.out.println(memberInfo.getPassword());
+        System.out.println("email : " + username);
+
+        MemberInfo memberInfo = memberInfoRepository.findByEmail(username)
+                .orElseThrow(() -> {
+                    System.out.println("User not found: " + username);
+                    return new AuthHandler(ErrorStatus.AUTHENTICATION_FAILED);
+                });
+
+        if (memberInfo.getStatus() == Status.INACTIVE) {
+            System.out.println("Inactive Member");
+            throw new MemberInfoHandler(ErrorStatus.INACTIVE_MEMBER);
+        }
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(memberInfo.getEmail())
