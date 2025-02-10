@@ -43,8 +43,11 @@ public enum ErrorStatus implements BaseErrorCode {
 
     DIARY_NOT_FOUND(HttpStatus.BAD_REQUEST,"DIARY4001","해당 날짜에 기록한 일기가 존재하지 않습니다."),
     DIARY_ISNT_MINE(HttpStatus.BAD_REQUEST,"DIARY4002","일기의 id와 자신의 id가 일치하지 않습니다."),
+
+    NO_MORE_AI_COUNT(HttpStatus.BAD_REQUEST,"GPTCREATE4001","더이상 ai 자동 생성을 할 수 없습니다."),
     //emotionNote(하루 일들) 관련 에러
     NOTE_NOT_FOUND(HttpStatus.BAD_REQUEST,"NOTE4001","해당 날짜에 기록한 일이 존재하지 않습니다.");
+
 
 
     private final HttpStatus httpStatus;

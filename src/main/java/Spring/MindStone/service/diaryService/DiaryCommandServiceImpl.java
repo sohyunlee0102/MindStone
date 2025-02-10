@@ -3,6 +3,7 @@ package Spring.MindStone.service.diaryService;
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.diary.DailyDiary;
+import Spring.MindStone.domain.diary.DailyEmotionStatistic;
 import Spring.MindStone.domain.diary.DiaryImage;
 import Spring.MindStone.domain.emotion.EmotionNote;
 import Spring.MindStone.domain.enums.EmotionList;
@@ -10,6 +11,7 @@ import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.repository.diaryRepository.DiaryImageRepository;
 import Spring.MindStone.repository.diaryRepository.DiaryRepository;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
+import Spring.MindStone.service.GptService;
 import Spring.MindStone.service.emotionNoteService.EmotionNoteQueryService;
 import Spring.MindStone.service.FileService;
 import Spring.MindStone.service.memberInfoService.MemberInfoService;
@@ -46,35 +48,28 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     private final FileService fileService;
     private final DiaryImageRepository diaryImageRepository;
     private final DiaryQueryServiceImpl diaryQueryServiceImpl;
-
-    @Value("${openai.secret-key}")
-    private String SECRET_KEY;
-    private OpenAiService openAiService;
+    private final GptService gptService;
 
     private final String USER = ChatMessageRole.USER.value();
     private final String ASSISTANT = ChatMessageRole.ASSISTANT.value();
     private final String SYSTEM = ChatMessageRole.SYSTEM.value();
+    private final DailyEmotionStatisticService dailyEmotionStatisticService;
 
-    private final List<ChatMessage> systemPrompt = List.of(
-            new ChatMessage(SYSTEM, "You are an emotional diary generator that writes daily reflections in Korean."),
-            new ChatMessage(SYSTEM, "1. The input consists of daily activities described with action, emotion, and emotionScore (without time)."),
-            new ChatMessage(SYSTEM, "2. Arrange the activities in a natural order to ensure the diary feels coherent and follows a logical flow of events."),
-            new ChatMessage(SYSTEM, "3. Use casual and relatable language, avoiding formal speech. Write as if the user is talking to themselves"),
-            new ChatMessage(SYSTEM, "4. Highlight the user's emotional transitions throughout the day and summarize the overall sentiment at the end."),
-            new ChatMessage(SYSTEM, "5. Keep the diary concise, engaging, and authentic to the user's experiences."),
-            new ChatMessage(SYSTEM, "6. If no input is provided or the input is not understandable, write a reflection with the phrase like '이유 없이' to describe the emotion."),
-            new ChatMessage(SYSTEM, "7. If asked to regenerate, rewrite the diary with a different perspective or style while maintaining coherence and emotional flow."),
-            new ChatMessage(SYSTEM, "The diary must be written in Korean.")
-    );
-
-    @PostConstruct
-    public void init() {
-        openAiService = new OpenAiService(SECRET_KEY, Duration.ofSeconds(45)); // 45초 내에 응답 안올 시 예외 던짐
-        // TODO openAiService 싱글톤으로 (OpenAiServiceWrapper 빈으로 감싸서 클래스 이곳 저곳에 제공?)
+    public void checkGPTCount(Long memberId){
+        DailyEmotionStatistic statisticEntity = dailyEmotionStatisticService.getStatisticEntity(memberId);
+        if(statisticEntity.getDiaryAutoCreationCount() > 0){
+            statisticEntity.setDiaryAutoCreationCount(statisticEntity.getDiaryAutoCreationCount() - 1);
+            dailyEmotionStatisticService.updateStatistic(statisticEntity);
+        }else{
+            throw new MemberInfoHandler(ErrorStatus.NO_MORE_AI_COUNT);
+        }
     }
 
     @Override
     public DiaryResponseDTO.DiaryCreationResponseDTO createDiary(Long id, LocalDate date) {
+        //0. 사용자가 이미 ai생성 횟수를 다 썼는지 체크
+        checkGPTCount(id);
+
         //1. EmotionNoteService에서 멤버의 하루 일들을 갖고옴.
 
         List<EmotionNote> emotionNoteList = emotionNoteService.getNotesByIdAndDate(id, date);
@@ -105,13 +100,16 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
 
         //4. 프롬프트와 생성하는 함수와 GPT API를 실행
-        String content = getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
+        String content = gptService.getOpenAiResult(gptService.generateDiaryPrompt(chatPrompt));
         return DiaryResponseDTO.DiaryCreationResponseDTO
                 .builder().content(content).bodyPart(result).build();
     }
 
     @Override
     public DiaryResponseDTO.DiaryCreationResponseDTO createDiaryRe(Long id, String bodyPart, LocalDate date){
+        //0. 사용자가 이미 ai생성 횟수를 다 썼는지 체크
+        checkGPTCount(id);
+
         List<ChatMessage> chatPrompt = List.of(
                 new ChatMessage(USER, "아침 운동, 기쁨, 50"),
                 new ChatMessage(ASSISTANT, "아침에 일어나서 운동을 하니깐 그래도 상쾌한 기분이었다."),
@@ -129,30 +127,12 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         );
 
         //4. 프롬프트와 생성하는 함수와 GPT API를 실행
-        String content = getOpenAiResult(generatePrompt(systemPrompt, chatPrompt));
+        String content = gptService.getOpenAiResult(gptService.generateDiaryPrompt(chatPrompt));
         return DiaryResponseDTO.DiaryCreationResponseDTO
                 .builder().content(content).bodyPart(bodyPart).build();
     }
 
-    private ChatCompletionRequest generatePrompt(List<ChatMessage> systemPrompt, List<ChatMessage> chatPrompt){
-        List<ChatMessage> promptMessage = new ArrayList<>();
-        promptMessage.addAll(systemPrompt);
-        promptMessage.addAll(chatPrompt);
 
-        return ChatCompletionRequest.builder()
-                .model("gpt-3.5-turbo")
-                .messages(promptMessage)
-                .temperature(0.2)
-                .build();
-    }
-
-    private String getOpenAiResult(ChatCompletionRequest request){
-        Long startTime = System.currentTimeMillis();
-        ChatCompletionResult result = openAiService.createChatCompletion(request);
-        Long endTime = System.currentTimeMillis();
-        System.out.printf("GPTTranslationService: translation took %d seconds, consumed %d tokens total (prompt %d, completion %d)%n", (endTime-startTime)/1000, result.getUsage().getTotalTokens(), result.getUsage().getPromptTokens(), result.getUsage().getCompletionTokens());
-        return result.getChoices().get(0).getMessage().getContent();
-    }
 
     public SimpleDiaryDTO updateDiary(DiaryUpdateDTO updateDTO, Long memberId, List<MultipartFile> image){
         //날짜
