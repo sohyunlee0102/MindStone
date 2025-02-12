@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
 public class JwtTokenUtil {
 
-    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60; // 1시간
+    private static final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 30; // 30분
     private static final long REFRESH_TOKEN_EXPIRATION = 7 * 24 * 60 * 60 * 1000; // 7일
 
     @Value("${spring.jwt.secret-key}")
@@ -68,6 +70,7 @@ public class JwtTokenUtil {
     // 토큰 검증
     public static Claims validateToken(String token) {
         try {
+            System.out.println("Token : " + token);
             return Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token)
@@ -87,6 +90,25 @@ public class JwtTokenUtil {
             throw new AuthHandler(ErrorStatus.INVALID_TOKEN);
         }
         return Long.parseLong(memberId);
+    }
+
+    // 유저 이메일 추출 (온보딩 사용 - 임시)
+    public static String extractUserEmail(String token) {
+        String accessToken = token.substring(7);
+        Claims claims = validateToken(accessToken);
+        String email = claims.getSubject();
+        if (email == null || email.isEmpty()) {
+            throw new AuthHandler(ErrorStatus.INVALID_TOKEN);  // 커스텀 예외 처리
+        }
+        return email;
+    }
+
+    public static LocalDateTime getExpirationDate(String token) {
+        Claims claims = validateToken(token);
+        return claims.getExpiration()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     public static class InvalidTokenException extends RuntimeException {

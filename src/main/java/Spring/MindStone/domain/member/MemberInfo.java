@@ -8,6 +8,7 @@ import Spring.MindStone.domain.enums.MBTI;
 import Spring.MindStone.domain.enums.Role;
 import Spring.MindStone.domain.enums.Status;
 import Spring.MindStone.domain.habit.Habit;
+import Spring.MindStone.domain.listener.MemberEntityListner;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -23,6 +24,7 @@ import java.util.List;
 @Builder
 @DynamicUpdate
 @DynamicInsert
+@EntityListeners(MemberEntityListner.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class MemberInfo extends BaseEntity {

@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Slf4j
 @EnableWebSecurity
 @Configuration
@@ -29,13 +31,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(request -> {
+                    var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                    corsConfig.setAllowedOrigins(List.of("http://localhost:3000", "http://15.165.241.217:8080")); // 필요한 도메인 허용
+                    corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfig.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                    corsConfig.setAllowCredentials(true);  // 쿠키 및 인증 정보를 허용할 경우
+                    return corsConfig;
+                }))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
                 .authorizeHttpRequests((requests) ->requests
                         .requestMatchers("/", "/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/members").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // 스웨거 api
-                        .requestMatchers("/api/test/auth/**", "/api/diary/**", "/api/members/**", "/api/habits/**").hasRole("USER")
+                        .requestMatchers("/api/test/auth/**", "/api/diary/**", "/api/members/**", "/api/habits/**", "/api/members/survey", "/api/auth/logout").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터

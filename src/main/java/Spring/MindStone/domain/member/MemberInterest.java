@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
+@Builder
 @Setter  // Lombok을 활용하여 Setter 자동 생성 (수정 기능을 위해 추가)
 @DynamicUpdate
 @DynamicInsert

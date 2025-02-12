@@ -53,4 +53,13 @@ public class MemberInfoController {
         return ApiResponse.onSuccess(Map.of(memberInfoService.updatePassword(request, memberId), LocalDateTime.now()));
     }
 
+    @PostMapping("/deactivate")
+    @Operation(summary = "회원탈퇴 API", description = "회원탈퇴를 처리하는 API 입니다.")
+    public ApiResponse<String> memberDeactivate(@Valid @RequestBody MemberInfoRequestDTO.LogoutDto request,
+                                                @RequestHeader("Authorization") String authorization) {
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        memberInfoService.deactivateMember(memberId, request.getRefreshToken());
+        return ApiResponse.onSuccess("회원탈퇴가 완료되었습니다.");
+    }
+
 }
