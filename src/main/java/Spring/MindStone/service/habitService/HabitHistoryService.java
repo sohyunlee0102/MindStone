@@ -56,6 +56,7 @@ public class HabitHistoryService {
 
         return habitHistories.stream()
                 .map(habitHistory -> new HabitResponseDto.HabitHistoryDTO(
+                        habitHistory.getId(),
                         habitHistory.getComment(),
                         habitHistory.getStartTime(),
                         habitHistory.getEndTime(),

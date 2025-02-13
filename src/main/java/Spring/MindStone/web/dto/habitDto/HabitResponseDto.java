@@ -58,6 +58,7 @@ public class HabitResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class HabitHistoryDTO {
+        Long habitHistoryId;
         String comment;
         LocalDateTime startTime;
         LocalDateTime endTime;

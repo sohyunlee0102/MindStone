@@ -79,7 +79,7 @@ public class HabitController {
     }
 
     @GetMapping("/habitHistory/{date}")
-    @Operation(summary = "특정 날짜 습관 가져오기 API", description = "습관 달력의 특정 날짜에 기록한 습관 기록을 가져오는 API 입니다")
+    @Operation(summary = "특정 날짜 습관 가져오기 API", description = "습관 달력의 특정 날짜에 기록한 습관 기록을 가져오는 API 입니다.")
     public ApiResponse<List<HabitResponseDto.HabitHistoryDTO>> getHabitsForNow (@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                                                                   @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
@@ -89,7 +89,7 @@ public class HabitController {
     }
 
     @PostMapping("/habitHistory")
-    @Operation(summary = "습관 기록하기 API", description = "특정 날짜의 습관 기록을 추가하는 API 입니다")
+    @Operation(summary = "습관 기록하기 API", description = "특정 날짜의 습관 기록을 추가하는 API 입니다.")
     public ApiResponse<Long> addHabitHistory(@Valid @RequestBody HabitRequestDto.CreateHabitHistoryDto request,
                                              @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
@@ -97,7 +97,7 @@ public class HabitController {
     }
 
     @PatchMapping("/habitHistory")
-    @Operation(summary = "습관 기록 수정 API", description = "특정 날짜의 습관 기록을 수정하는 API 입니다")
+    @Operation(summary = "습관 기록 수정 API", description = "특정 날짜의 습관 기록을 수정하는 API 입니다. 수정할 필드 이외에는 null 로 전달해 주세요.")
     public ApiResponse<Long> updateHabitHistory(@Valid @RequestBody HabitRequestDto.UpdateHabitHistoryDto request) {
         return ApiResponse.onSuccess(habitHistoryService.updateHabitHistory(request));
     }
