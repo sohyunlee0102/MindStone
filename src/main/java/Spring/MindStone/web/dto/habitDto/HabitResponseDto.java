@@ -45,4 +45,24 @@ public class HabitResponseDto {
         Integer targetTime;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class GetLastHabitHistoryDTO {
+        Long daysSinceLastHabit;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HabitHistoryDTO {
+        String comment;
+        LocalDateTime startTime;
+        LocalDateTime endTime;
+        HabitColor habitColor;
+
+    }
+
 }

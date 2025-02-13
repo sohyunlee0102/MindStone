@@ -21,16 +21,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        System.out.println("email : " + username);
-
         MemberInfo memberInfo = memberInfoRepository.findByEmail(username)
                 .orElseThrow(() -> {
-                    System.out.println("User not found: " + username);
                     return new AuthHandler(ErrorStatus.AUTHENTICATION_FAILED);
                 });
 
         if (memberInfo.getStatus() == Status.INACTIVE) {
-            System.out.println("Inactive Member");
             throw new MemberInfoHandler(ErrorStatus.INACTIVE_MEMBER);
         }
 
