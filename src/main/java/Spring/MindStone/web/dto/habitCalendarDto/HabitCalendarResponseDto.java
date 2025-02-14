@@ -10,31 +10,29 @@ import java.util.List;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class HabitCalendarResponseDto {
 
-    @Schema(description = "해당 월 기록한 일 수 / 전체 일 수", example = "50.0")
+    @Schema(description = "한 달 동안 기록한 습관 비율 (%)", example = "50.0")
     private double recordPercentage;
 
-    @Schema(description = "100% 달성한 일 수", example = "3")
+    @Schema(description = "모든 습관을 100% 완료한 날의 개수", example = "3")
     private int fullAchievementCount;
 
-    @Schema(description = "일별 기록 리스트")
+    @Schema(description = "일별 습관 기록")
     private List<DailyRecord> dailyRecords;
 
     @Getter
     @Builder
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class DailyRecord {
         @Schema(description = "날짜", example = "1")
         private int day;
 
-        @Schema(description = "완료된 습관 개수", example = "2")
+        @Schema(description = "완료한 습관 개수", example = "2")
         private int completedHabits;
 
-        @Schema(description = "총 습관 개수", example = "3")
+        @Schema(description = "해당 날짜의 전체 습관 개수", example = "3")
         private int totalHabits;
     }
 }

@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/habit-calendar")
 @RequiredArgsConstructor
-@Tag(name = "HabitCalendar", description = "습관 달력 API")
+@Tag(name = "HabitCalendar", description = "습관 달력 조회 API")
 public class HabitCalendarController {
 
     private final HabitCalendarService habitCalendarService;
