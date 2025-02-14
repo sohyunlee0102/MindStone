@@ -35,6 +35,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 습관 관련 에러
     HABIT_NOT_FOUND(HttpStatus.BAD_REQUEST, "HABIT4001", "존재하지 않는 습관 ID 입니다."),
+    HABIT_HISTORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "HABIT4002", "습관 기록이 존재하지 않습니다."),
 
     // 돌 관련 에러
     STONE_NOT_FOUND(HttpStatus.BAD_REQUEST, "STONE4001", "존재하지 않는 돌 ID 입니다."),

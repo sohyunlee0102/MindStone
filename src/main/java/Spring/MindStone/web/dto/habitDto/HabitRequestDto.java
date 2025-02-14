@@ -7,6 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class HabitRequestDto {
 
     @Getter
@@ -57,6 +61,36 @@ public class HabitRequestDto {
         Boolean isActive;
         @NotNull
         @Schema(description = "습관 색상", example = "RED")
+        HabitColor habitColor;
+
+    }
+
+    @Getter
+    @Setter
+    public static class CreateHabitHistoryDto {
+
+        @NotBlank
+        String comment;
+        @NotNull
+        LocalDateTime startTime;
+        @NotNull
+        LocalDateTime endTime;
+        @NotNull
+        HabitColor habitColor;
+        @NotNull
+        Long habitId;
+
+    }
+
+    @Getter
+    @Setter
+    public static class UpdateHabitHistoryDto {
+
+        @NotNull
+        Long habitHistoryId;
+        String comment;
+        LocalDateTime startTime;
+        LocalDateTime endTime;
         HabitColor habitColor;
 
     }

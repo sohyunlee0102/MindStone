@@ -8,6 +8,7 @@ import Spring.MindStone.domain.enums.MBTI;
 import Spring.MindStone.domain.enums.Role;
 import Spring.MindStone.domain.enums.Status;
 import Spring.MindStone.domain.habit.Habit;
+import Spring.MindStone.domain.habit.HabitHistory;
 import Spring.MindStone.domain.listener.MemberEntityListner;
 import jakarta.persistence.*;
 import lombok.*;
@@ -84,6 +85,9 @@ public class MemberInfo extends BaseEntity {
 
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmotionNote> emotionNoteList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HabitHistory> habitHistoryList = new ArrayList<>();
 
     public void encodePassword(String password) { this.password = password; }
 

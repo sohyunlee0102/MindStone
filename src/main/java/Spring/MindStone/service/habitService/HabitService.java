@@ -26,6 +26,12 @@ public class HabitService {
     private final MemberInfoRepository memberInfoRepository;
 
     @Transactional
+    public Habit findHabitById(Long habitId) {
+        return habitRepository.findById(habitId)
+                .orElseThrow(() -> new HabitHandler(ErrorStatus.HABIT_NOT_FOUND));
+    }
+
+    @Transactional
     public List<HabitResponseDto.GetHabitDTO> getAllHabits(Long memberId) {
         List<Habit> habits = habitRepository.findByMemberInfoId(memberId);
 
