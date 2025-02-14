@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/emotionWay")
 @RequiredArgsConstructor
-@Tag(name = "감정 관리 방법", description = "사용자의 감정 관리 방법 조회 및 수정 API")
+@Tag(name = "EmotionWay", description = "사용자의 감정 관리 방법 조회 및 수정 API")
 public class EmotionWayController {
 
     private final EmotionWayService emotionWayService;
