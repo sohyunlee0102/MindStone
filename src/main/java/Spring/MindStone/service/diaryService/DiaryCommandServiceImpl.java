@@ -55,7 +55,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     private final String SYSTEM = ChatMessageRole.SYSTEM.value();
     private final DailyEmotionStatisticService dailyEmotionStatisticService;
 
-    public void checkGPTCount(Long memberId){
+    private void checkGPTCount(Long memberId){
         DailyEmotionStatistic statisticEntity = dailyEmotionStatisticService.getStatisticEntity(memberId);
         if(statisticEntity.getDiaryAutoCreationCount() > 0){
             statisticEntity.setDiaryAutoCreationCount(statisticEntity.getDiaryAutoCreationCount() - 1);

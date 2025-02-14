@@ -1,9 +1,16 @@
 package Spring.MindStone.service.emotionWayService;
 
+import Spring.MindStone.apiPayload.code.status.ErrorStatus;
+import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
+import Spring.MindStone.domain.diary.DailyEmotionStatistic;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.domain.member.MemberInterest;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import Spring.MindStone.repository.memberRepository.MemberInterestRepository;
+import Spring.MindStone.service.GptService;
+import Spring.MindStone.service.diaryService.DailyEmotionStatisticService;
+import Spring.MindStone.service.memberInfoService.MemberInfoService;
+import Spring.MindStone.web.dto.emotionWayDto.AiRecommandResponseDto;
 import Spring.MindStone.web.dto.emotionWayDto.EmotionWayRequestDto;
 import Spring.MindStone.web.dto.emotionWayDto.EmotionWayResponseDto;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
@@ -20,12 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class EmotionWayService {
 
+    private final MemberInfoService memberInfoService;
+    private final GptService gptService;
     @Value("${openai.secret-key}")
     private String SECRET_KEY;
     private OpenAiService openAiService;
@@ -36,7 +47,7 @@ public class EmotionWayService {
 
     private final MemberInfoRepository memberInfoRepository;
     private final MemberInterestRepository memberInterestRepository;
-
+    private final DailyEmotionStatisticService dailyEmotionStatisticService;
     /**
      * 감정 관리 방법 조회
      */
@@ -78,35 +89,59 @@ public class EmotionWayService {
         memberInterestRepository.save(memberInterest);
     }
 
-    private final List<ChatMessage> systemPrompt = List.of(
 
-    );
-
-    @PostConstruct
-    public void init() {
-        openAiService = new OpenAiService(SECRET_KEY, Duration.ofSeconds(45)); // 45초 내에 응답 안올 시 예외 던짐
-        // TODO openAiService 싱글톤으로 (OpenAiServiceWrapper 빈으로 감싸서 클래스 이곳 저곳에 제공?)
+    private void checkGPTCount(Long memberId){
+        DailyEmotionStatistic statisticEntity = dailyEmotionStatisticService.getStatisticEntity(memberId);
+        if(statisticEntity.getActionRecommandCount()> 0){
+            statisticEntity.setActionRecommandCount(statisticEntity.getActionRecommandCount() - 1);
+            dailyEmotionStatisticService.updateStatistic(statisticEntity);
+        }else{
+            throw new MemberInfoHandler(ErrorStatus.NO_MORE_AI_COUNT);
+        }
     }
 
+    public AiRecommandResponseDto getAiRecommand(Long memberId, String previousRecommand){
+        checkGPTCount(memberId);
 
-    private ChatCompletionRequest generatePrompt(List<ChatMessage> systemPrompt, List<ChatMessage> chatPrompt){
-        List<ChatMessage> promptMessage = new ArrayList<>();
-        promptMessage.addAll(systemPrompt);
-        promptMessage.addAll(chatPrompt);
+        MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
+        String job = memberInfo.getJob().toString();
+        String mbti = memberInfo.getMbti().toString();
+        String content = job + " " + mbti + ", 추천한 행동 :" + previousRecommand;
+        List<ChatMessage> chatPrompt = List.of(
+                new ChatMessage(USER, "대학생 INFP, 추천한 행동: 게임하기,서점에서 책 구매하기,옛날영화보기"),
+                new ChatMessage(ASSISTANT, "카페에서 감성 사진 찍기,전시회 구경하기,플레이리스트 정리하기"),
+                new ChatMessage(USER, "직장인 ESTJ, 추천한 행동: "),
+                new ChatMessage(ASSISTANT, "헬스장 가기,맛집 동료들과 방문하기,주말 드라이브"),
+                new ChatMessage(USER, content)
+        );
 
-        return ChatCompletionRequest.builder()
-                .model("gpt-3.5-turbo")
-                .messages(promptMessage)
-                .temperature(0.2)
-                .build();
+        String recommand = gptService.getOpenAiResult(gptService.generateRecommandPrompt(chatPrompt));
+        return AiRecommandResponseDto.builder().recommand(recommand).
+                previousRecommand(previousRecommand+","+recommand).build();
     }
 
-    private String getOpenAiResult(ChatCompletionRequest request){
-        Long startTime = System.currentTimeMillis();
-        ChatCompletionResult result = openAiService.createChatCompletion(request);
-        Long endTime = System.currentTimeMillis();
-        System.out.printf("GPTTranslationService: translation took %d seconds, consumed %d tokens total (prompt %d, completion %d)%n", (endTime-startTime)/1000, result.getUsage().getTotalTokens(), result.getUsage().getPromptTokens(), result.getUsage().getCompletionTokens());
-        return result.getChoices().get(0).getMessage().getContent();
+    public String getRecommand(Long memberId){
+        MemberInfo member = memberInfoService.findMemberById(memberId);
+
+        MemberInterest memberInterest = memberInterestRepository.findByMemberInfo(member)
+                .orElseThrow(() -> new EntityNotFoundException("회원의 감정 관리 정보를 찾을 수 없습니다."));
+
+        String interestString = memberInterest.getHobbyActions() + "," +
+                memberInterest.getStressActions() + "," + memberInterest.getSpecialSkillActions();
+
+        //죄송해요 그냥 시간없어서 셔플 시켜서 3개 던져주기로 했어요..
+        //시간나면은 이쪽 보완하는걸로..
+        List<String> interestList = new ArrayList<>(Arrays.stream(interestString.split(",")).toList());
+
+        Collections.shuffle(interestList);
+
+        int size = Math.min(3, interestList.size());
+        List<String> randomSelection = interestList.subList(0, size);
+
+        //list1,list2,list3해서 3개 랜덤하게 보낼예정.. ㅎ.....
+        return String.join(",", randomSelection);
+
     }
+
 
 }
