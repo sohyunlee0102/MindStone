@@ -32,8 +32,19 @@ public class DailyEmotionStatisticService {
     public SimpleEmotionStatisticDto getStatistic(Long memberId) {
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
         DailyEmotionStatistic statistics = (DailyEmotionStatistic) dailyEmotionStatisticRepository.findByDateAndMemberInfo(LocalDate.now(),memberInfo)
-                .orElseGet(() -> new DailyEmotionStatistic(memberInfo, LocalDate.now()));
+                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.now())) );
 
         return new SimpleEmotionStatisticDto(statistics);
+    }
+
+    public DailyEmotionStatistic getStatisticEntity(Long memberId) {
+        MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
+        DailyEmotionStatistic statistics = (DailyEmotionStatistic) dailyEmotionStatisticRepository.findByDateAndMemberInfo(LocalDate.now(),memberInfo)
+                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.now())) );
+        return statistics;
+    }
+
+    public void updateStatistic(DailyEmotionStatistic statistics) {
+        dailyEmotionStatisticRepository.save(statistics);
     }
 }

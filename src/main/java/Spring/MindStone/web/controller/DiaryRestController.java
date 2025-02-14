@@ -105,7 +105,7 @@ public class DiaryRestController {
     }
 
     @GetMapping("/calendar")
-    @Operation(summary = "특정 년월 달력 요청")
+    @Operation(summary = "특정 년월 달력 요청", description = "이거 list로 보내주는거에요")
     @Parameters({
             @Parameter(name = "year", description = "년도"),
             @Parameter(name = "month", description = "월")
@@ -119,5 +119,21 @@ public class DiaryRestController {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
         return ApiResponse.onSuccess(diaryQueryService.getDiaryCalendar(year,month,memberId));
     }
+
+    /*@GetMapping("/calendar/repot")
+    @Operation(summary = "특정 년월 달력 요청")
+    @Parameters({
+            @Parameter(name = "year", description = "년도"),
+            @Parameter(name = "month", description = "월")
+    })
+    public ApiResponse<List<DiaryCallendarDTO>> getCalendarReport(
+            @RequestParam("year") @NotNull int year,
+            @RequestParam("month") int month,
+            @RequestHeader("Authorization") String authorization
+    ){
+        System.out.println("GET api/diary/calendar/report");
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(diaryQueryService.getDiaryCalendar(year,month,memberId));
+    }*/
 
 }
