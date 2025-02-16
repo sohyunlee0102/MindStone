@@ -4,12 +4,16 @@ import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.code.status.SuccessStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.member.MemberInfo;
+import Spring.MindStone.domain.member.MemberInterest;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
+import Spring.MindStone.repository.memberRepository.MemberInterestRepository;
 import Spring.MindStone.service.habitService.HabitService;
 import Spring.MindStone.web.dto.onboardingDto.OnboardingRequestDto;
 import Spring.MindStone.web.dto.onboardingDto.OnboardingResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 public class OnboardingService {
@@ -19,6 +23,8 @@ public class OnboardingService {
 
     @Autowired
     private HabitService habitService;
+    @Autowired
+    private MemberInterestRepository memberInterestRepository;
 
     /**
      * 온보딩 처리 (회원 정보 저장)
@@ -67,6 +73,13 @@ public class OnboardingService {
             habitService.createHabits(onboardingRequestDto.getHabits(), memberInfo);
         }
 
+        //멤버 인터레스트 제작
+        MemberInterest memberInterest = MemberInterest.builder()
+                .memberInfo(memberInfo)
+                .hobbyActions(String.join(",",onboardingRequestDto.getHobbies()))
+                .stressActions(String.join(",",onboardingRequestDto.getStressManagement()))
+                .specialSkillActions(String.join(",",onboardingRequestDto.getSpecialSkills())).build();
+        memberInterestRepository.save(memberInterest);
 
         // 온보딩 성공 시 - SuccessStatus
         return new OnboardingResponseDto(

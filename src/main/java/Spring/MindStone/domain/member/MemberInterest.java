@@ -27,20 +27,20 @@ public class MemberInterest extends BaseEntity {
     @Column(name = "hobby_actions")
     private String hobbyActions;   // 취미 행동 (운동, 독서 등)
 
-    @Column(name = "hobby_action_count")
-    private Integer hobbyActionCount;   // 취미 선택 횟수
+    /*@Column(name = "hobby_action_count")
+    private Integer hobbyActionCount;   // 취미 선택 횟수*/
 
     @Column(name = "special_skill_actions")
     private String specialSkillActions; // 특기 행동 (글쓰기, 요리 등)
 
-    @Column(name = "special_skill_action_count")
-    private Integer specialSkillActionCount;    // 특기 선택 횟수
+    /*@Column(name = "special_skill_action_count")
+    private Integer specialSkillActionCount;    // 특기 선택 횟수*/
 
     @Column(name = "stress_actions")
     private String stressActions;       // 스트레스 풀이 방법(행동)
 
-    @Column(name = "stress_actions_count")
-    private Integer stressActionsCount; // 스트레스 풀이 선택 횟수
+    /*@Column(name = "stress_actions_count")
+    private Integer stressActionsCount; // 스트레스 풀이 선택 횟수*/
 
     /**
      * 감정 관리 방법 정보 업데이트 메서드
