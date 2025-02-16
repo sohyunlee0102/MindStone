@@ -6,6 +6,7 @@ import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.domain.diary.DailyEmotionStatistic;
 import Spring.MindStone.domain.diary.DiaryImage;
 import Spring.MindStone.domain.emotion.EmotionNote;
+import Spring.MindStone.domain.emotion.StressEmotionNote;
 import Spring.MindStone.domain.enums.EmotionList;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.repository.diaryRepository.DiaryImageRepository;
@@ -25,6 +26,7 @@ import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +69,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     }
 
     @Override
+    @Transactional
     public DiaryResponseDTO.DiaryCreationResponseDTO createDiary(Long id, LocalDate date) {
         //0. 사용자가 이미 ai생성 횟수를 다 썼는지 체크
         checkGPTCount(id);
@@ -73,11 +77,17 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         //1. EmotionNoteService에서 멤버의 하루 일들을 갖고옴.
 
         List<EmotionNote> emotionNoteList = emotionNoteService.getNotesByIdAndDate(id, date);
+        List<StressEmotionNote> stressEmotionNoteList = emotionNoteService.getStressNotesByIdAndDate(id, date);
 
+
+        //두 노트를 합침
+        List<Object> sortedList = Stream.concat(emotionNoteList.stream(), stressEmotionNoteList.stream())
+                .sorted(Comparator.comparing(note -> note.getCreatedAt())) // createdAt 기준 정렬
+                .collect(Collectors.toList());
 
         //2. 받아온 리스트를 합침.
-        String result = emotionNoteList.stream()
-                .map(EmotionNote::toString)
+        String result = sortedList.stream()
+                .map(Object::toString)
                 .collect(Collectors.joining("\n"));
 
         System.out.println("일기 자동생성 호출 - 들어간 내용"+result);
