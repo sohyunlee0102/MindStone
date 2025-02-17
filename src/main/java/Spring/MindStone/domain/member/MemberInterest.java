@@ -20,7 +20,7 @@ public class MemberInterest extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // ID (PK)
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private MemberInfo memberInfo; // 회원 ID (FK, Member와 관계 설정)
 
