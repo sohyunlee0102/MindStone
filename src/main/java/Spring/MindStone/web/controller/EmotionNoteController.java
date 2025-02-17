@@ -43,7 +43,6 @@ public class EmotionNoteController {
             @Valid @RequestBody EmotionNoteStressSaveDTO request,
             @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-
         return ApiResponse.onSuccess(emotionNoteService.saveStressEmotionNote(request ,memberId));
     }
 

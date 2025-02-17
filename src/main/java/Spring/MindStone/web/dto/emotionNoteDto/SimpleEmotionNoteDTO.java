@@ -1,6 +1,8 @@
 package Spring.MindStone.web.dto.emotionNoteDto;
 
 import Spring.MindStone.domain.emotion.EmotionNote;
+import Spring.MindStone.domain.emotion.StressEmotionNote;
+import Spring.MindStone.web.dto.emotionDto.SimpleEmotionStatisticDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -22,6 +24,13 @@ public class SimpleEmotionNoteDTO {
     private String content;
 
     public SimpleEmotionNoteDTO(EmotionNote emotionNote) {
+        id = emotionNote.getId();
+        emotion =emotionNote.getEmotion().toString();
+        emotionFigure = emotionNote.getEmotionFigure();
+        content = emotionNote.getContent();
+    }
+
+    public SimpleEmotionNoteDTO(StressEmotionNote emotionNote){
         id = emotionNote.getId();
         emotion =emotionNote.getEmotion().toString();
         emotionFigure = emotionNote.getEmotionFigure();
