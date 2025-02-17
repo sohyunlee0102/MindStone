@@ -171,10 +171,12 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     public SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId,List<MultipartFile> image){
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
 
+        EmotionList emotion = EmotionList.fromString(saveDTO.getEmotion());
+
         //이미지만 설정안했음!
         DailyDiary diary = DailyDiary.builder()
                 .date(saveDTO.getDate())
-                .emotion(EmotionList.fromString(saveDTO.getEmotion()))
+                .emotion(emotion)
                 .memberInfo(memberInfo)
                 .impressiveThing(saveDTO.getImpressiveThing())
                 .title(saveDTO.getTitle())

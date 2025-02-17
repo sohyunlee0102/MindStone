@@ -2,6 +2,8 @@ package Spring.MindStone.web.dto.diaryDto;
 
 import Spring.MindStone.domain.diary.DailyDiary;
 import Spring.MindStone.domain.diary.DiaryImage;
+import Spring.MindStone.domain.enums.EmotionList;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +19,7 @@ public class SimpleDiaryDTO {
 
     private LocalDate date; // 날짜
 
-    private String emotion;
+    private EmotionList emotion;
 
     private String title; // 일기 제목
 
@@ -27,7 +29,7 @@ public class SimpleDiaryDTO {
 
     public SimpleDiaryDTO(DailyDiary diary){
         id = diary.getId();
-        emotion = diary.getEmotion().toString();
+        emotion = diary.getEmotion();
         date = diary.getDate();
         title = diary.getTitle();
         content = diary.getContent();
