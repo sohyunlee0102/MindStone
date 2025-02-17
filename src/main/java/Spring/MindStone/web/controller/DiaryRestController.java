@@ -6,6 +6,8 @@ import Spring.MindStone.config.jwt.JwtTokenUtil;
 import Spring.MindStone.service.diaryService.DiaryCommandService;
 import Spring.MindStone.service.diaryService.DiaryQueryService;
 import Spring.MindStone.web.dto.diaryDto.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,10 +16,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -71,15 +75,24 @@ public class DiaryRestController {
         return ApiResponse.onSuccess(diaryQueryService.getDiaryById(memberId,diaryId));
     }
 
-    @PostMapping("/save")
-    @Operation(summary = "일기 저장", description = "일기 내용이 마음에 들때 저장요청")
+    @PostMapping(value = "/save")
     public ApiResponse<SimpleDiaryDTO> saveDiary(
-            @Valid @RequestBody DiarySaveDTO diaryDTO,
-            @RequestPart(value = "image", required = false) List<MultipartFile> image,
-            @RequestHeader("Authorization") String authorization){
-        System.out.println("POST api/diary/save");
+            @RequestPart DiarySaveDTO diaryDTO,
+            @RequestPart(value = "image", required = false) List<MultipartFile> images,
+            @RequestHeader("Authorization") String authorization) {
+
+        System.out.println("받은 diaryDTO: " + diaryDTO);
+        System.out.println("받은 이미지들: " + images);
+
+        if (images == null) {
+            System.out.println("빈 배열");
+            images = new ArrayList<>();
+        }
+
+        // 회원 ID 추출
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-        return ApiResponse.onSuccess(diaryCommandService.saveDiary(diaryDTO,memberId,image));
+
+        return ApiResponse.onSuccess(diaryCommandService.saveDiary(diaryDTO, memberId, images));
     }
 
     @DeleteMapping("/{diaryId}")
