@@ -24,6 +24,7 @@ public class DailyEmotionStatisticService {
         DailyEmotionStatistic statistics = (DailyEmotionStatistic) dailyEmotionStatisticRepository.findByDateAndMemberInfo(date,memberInfo)
                 .orElseGet(() -> new DailyEmotionStatistic(memberInfo, date)); // 없으면 생성
 
+        //여기서 감정들에 추가되는 수치만큼 더해줌.
         statistics.updateEmotion(emotion, figure);
 
         return dailyEmotionStatisticRepository.save(statistics); // 저장 후 반환
