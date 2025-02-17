@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +22,10 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
     // 특정 날짜에 사용자가 기록한(달성한) 습관 개수 조회
     @Query("SELECT COUNT(hh) FROM HabitHistory hh " +
             "WHERE hh.memberInfo.id = :memberId " +
-            "AND YEAR(hh.startTime) = :year " +
-            "AND MONTH(hh.startTime) = :month " +
-            "AND DAY(hh.startTime) = :day")
+            "AND DATE(hh.startTime) = :date")
     int countCompletedHabitsByDate(@Param("memberId") Long memberId,
-                                   @Param("year") int year,
-                                   @Param("month") int month,
-                                   @Param("day") int day);
+                                   @Param("date") LocalDate date);
+
 
     // 특정 월에 사용자가 기록한(달성한) 습관 개수 조회
     @Query("SELECT COUNT(hh) FROM HabitHistory hh " +
@@ -39,7 +37,7 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
                                     @Param("month") int month);
 
     // 특정 주별 습관 달성 횟수 조회 (리포트)
-    @Query(value = "SELECT WEEK(hh.start_time), hh.habit_id, COUNT(hh) " +
+    @Query(value = "SELECT WEEK(hh.start_time), hh.habit_id, COUNT(*) " +
             "FROM habit_history hh " +
             "WHERE hh.member_id = :memberId " +
             "AND YEAR(hh.start_time) = :year " +
@@ -50,8 +48,9 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
                                         @Param("year") int year,
                                         @Param("month") int month);
 
+
     // 특정 주별 활동 시간 조회 (리포트)
-    @Query(value = "SELECT WEEK(hh.start_time), hh.habit_id, SUM(TIMESTAMPDIFF(MINUTE, hh.start_time, hh.end_time)) " +
+    @Query(value = "SELECT WEEK(hh.start_time), hh.habit_id, SUM(TIMESTAMPDIFF(MINUTE, hh.start_time, COALESCE(hh.end_time, hh.start_time))) " +
             "FROM habit_history hh " +
             "WHERE hh.member_id = :memberId " +
             "AND YEAR(hh.start_time) = :year " +
@@ -61,6 +60,7 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
     List<Object[]> getWeeklyActiveTime(@Param("memberId") Long memberId,
                                        @Param("year") int year,
                                        @Param("month") int month);
+
 
     // 달성률 증가율 계산 (리포트)
     @Query(value = "SELECT (endRate - startRate) * 100.0 / NULLIF(startRate, 0) " +
@@ -80,9 +80,10 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
             "AND YEAR(hh.start_time) = :year " +
             "AND MONTH(hh.start_time) = :month " +
             "GROUP BY hh.habit_id " +
-            "ORDER BY COUNT(hh) DESC LIMIT 1",
+            "ORDER BY COUNT(*) DESC LIMIT 1",
             nativeQuery = true)
     Long findMostCompletedHabit(@Param("memberId") Long memberId,
                                 @Param("year") int year,
                                 @Param("month") int month);
+
 }

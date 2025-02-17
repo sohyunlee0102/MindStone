@@ -17,9 +17,10 @@ public interface HabitRepository extends JpaRepository<Habit, Long> {
     // 특정 날짜까지 존재하는 전체 습관 개수 조회 (추가된 습관 반영)
     @Query("SELECT COUNT(h) FROM Habit h " +
             "WHERE h.memberInfo.id = :memberId " +
-            "AND h.createdAt <= :date")
+            "AND DATE(h.createdAt) <= :date")
     int countTotalHabitsByDate(@Param("memberId") Long memberId,
                                @Param("date") LocalDate date);
+
 
     // 특정 월에 존재한 전체 습관 개수 조회
     @Query("SELECT COUNT(h) FROM Habit h " +
