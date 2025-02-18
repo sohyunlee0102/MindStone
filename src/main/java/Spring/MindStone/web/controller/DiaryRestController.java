@@ -55,7 +55,7 @@ public class DiaryRestController {
     }
 
 
-    @GetMapping("/{date}")
+    @GetMapping("/date/{date}")
     @Operation(summary = "일기 날짜기준 요청 요청", description = "특정날짜 기준 일기 요청")
     public ApiResponse<SimpleDiaryDTO> getDiary
             (@PathVariable("date") LocalDate date,
@@ -65,7 +65,7 @@ public class DiaryRestController {
         return ApiResponse.onSuccess(diaryQueryService.getDiaryByDate(memberId,date));
     }
 
-    @GetMapping("//{diaryId}")
+    @GetMapping("/id/{diaryId}")
     @Operation(summary = "일기 Id 기준 요청", description = "일기에 저장된 ID기준으로 요청(달력 처음에 출력할때 그걸 리스트로 넣어놓을 거임))")
     public ApiResponse<SimpleDiaryDTO> getDiary
             (@PathVariable("diaryId") Long diaryId,

@@ -156,7 +156,9 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         diary.update(updateDTO);//내용이나 돌 모양이 변형
 
         //이미지의 수정 사항이 있다면 이미지 변경 진행
-        if(!image.isEmpty()){
+        if(image == null||image.isEmpty()){
+
+        }else{
             List<DiaryImage> diaryImageList = diary.getDiaryImageList();
 
             //1. 이미지 리스트의 aws와 레포에서 삭제
