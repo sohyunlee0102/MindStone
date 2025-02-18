@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface DiaryRepository extends JpaRepository<DailyDiary, Long> {
     @Query(value = "SELECT * FROM daily_diary " +
             "WHERE date = :date " +
-            "AND member_id != :memberId",
+            "AND member_id = :memberId",
             nativeQuery = true)
     Optional<DailyDiary> findDailyDiaryByDate(@Param("memberId") Long memberId,
                                               @Param("date") LocalDate date);
