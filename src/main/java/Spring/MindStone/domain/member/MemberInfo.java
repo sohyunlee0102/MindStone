@@ -71,8 +71,8 @@ public class MemberInfo extends BaseEntity {
     @Column(nullable = false, length = 15, columnDefinition = "VARCHAR(15) DEFAULT 'USER'")
     private Role role;
 
-    @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberInterest> memberInterestList = new ArrayList<>();        // 유저 관심사 리스트
+    @OneToOne(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MemberInterest memberInterestList;        // 유저 관심사 리스트
 
     @OneToMany(mappedBy = "memberInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DailyDiary> dailyDiaryList = new ArrayList<>();

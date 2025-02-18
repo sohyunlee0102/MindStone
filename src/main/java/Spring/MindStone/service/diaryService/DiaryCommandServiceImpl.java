@@ -178,10 +178,11 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
     }
 
     @Override
-    public SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId,List<MultipartFile> image){
+    public SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId, List<MultipartFile> images) {
+        // 회원 정보 찾기
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
 
-        //이미지만 설정안했음!
+        // DailyDiary 객체 생성
         DailyDiary diary = DailyDiary.builder()
                 .date(saveDTO.getDate())
                 .emotion(EmotionList.fromString(saveDTO.getEmotion()))
@@ -189,17 +190,22 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
                 .impressiveThing(saveDTO.getImpressiveThing())
                 .title(saveDTO.getTitle())
                 .content(saveDTO.getContent())
+                .diaryImageList(new ArrayList<>())  // 빈 리스트로 초기화
                 .build();
 
+        // 일기 레포에 일기 저장 (이 때 diary와 연결된 DiaryImage도 함께 저장)
+        diaryRepository.save(diary);  // 일기 객체와 이미지들 모두 저장됨
 
-        //diary에 이미지 리스트들 저장
-        diary.setDiaryImageList(setAwsStore(diary, image));
+        // 이미지가 있다면 이미지 리스트 설정
+        if (images != null && !images.isEmpty()) {
+            List<DiaryImage> diaryImageList = setAwsStore(diary, images); // 이미지 저장
+            diary.setDiaryImageList(diaryImageList);  // diary에 이미지 설정
+        }
 
-        //일기 레포에 일기 저장
-        diaryRepository.save(diary);
-
+        // 일기 DTO 반환
         return new SimpleDiaryDTO(diary);
     }
+
 
     public SimpleDiaryDTO deleteDiary(Long id, Long memberId){
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);

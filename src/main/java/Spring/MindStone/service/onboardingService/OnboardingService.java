@@ -13,6 +13,7 @@ import Spring.MindStone.web.dto.onboardingDto.OnboardingResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,12 +74,26 @@ public class OnboardingService {
             habitService.createHabits(onboardingRequestDto.getHabits(), memberInfo);
         }
 
-        //멤버 인터레스트 제작
-        MemberInterest memberInterest = MemberInterest.builder()
-                .memberInfo(memberInfo)
-                .hobbyActions(String.join(",",onboardingRequestDto.getHobbies()))
-                .stressActions(String.join(",",onboardingRequestDto.getStressManagement()))
-                .specialSkillActions(String.join(",",onboardingRequestDto.getSpecialSkills())).build();
+        //기존 엔티티 조회
+        Optional<MemberInterest> existingMemberInterest = memberInterestRepository.findByMemberInfo(memberInfo);
+
+        MemberInterest memberInterest = existingMemberInterest.map(interest -> {
+            // 기존 엔티티가 존재하면 필드 업데이트
+            interest.setHobbyActions(String.join(",", onboardingRequestDto.getHobbies()));
+            interest.setStressActions(String.join(",", onboardingRequestDto.getStressManagement()));
+            interest.setSpecialSkillActions(String.join(",", onboardingRequestDto.getSpecialSkills()));
+            return interest;
+        }).orElseGet(() -> {
+            // 존재하지 않으면 새 엔티티 생성
+            return MemberInterest.builder()
+                    .memberInfo(memberInfo)
+                    .hobbyActions(String.join(",", onboardingRequestDto.getHobbies()))
+                    .stressActions(String.join(",", onboardingRequestDto.getStressManagement()))
+                    .specialSkillActions(String.join(",", onboardingRequestDto.getSpecialSkills()))
+                    .build();
+        });
+
+        // 저장 (JPA가 존재하면 업데이트, 없으면 삽입)
         memberInterestRepository.save(memberInterest);
 
         // 온보딩 성공 시 - SuccessStatus

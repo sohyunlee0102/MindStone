@@ -18,7 +18,7 @@ public interface DiaryCommandService {
     SimpleDiaryDTO updateDiary(DiaryUpdateDTO updateDTO, Long memberId, List<MultipartFile> image);
 
     /** 일기 저장 **/
-    SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId, List<MultipartFile> imageList);
+    SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId, List<MultipartFile> images);
 
     /** 일기 삭제 **/
     SimpleDiaryDTO deleteDiary(Long id, Long memberId);
