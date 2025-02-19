@@ -184,16 +184,27 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         // 회원 정보 찾기
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
 
-        // DailyDiary 객체 생성
-        DailyDiary diary = DailyDiary.builder()
-                .date(saveDTO.getDate())
-                .emotion(EmotionList.fromString(saveDTO.getEmotion()))
-                .memberInfo(memberInfo)
-                .impressiveThing(saveDTO.getImpressiveThing())
-                .title(saveDTO.getTitle())
-                .content(saveDTO.getContent())
-                .diaryImageList(new ArrayList<>())  // 빈 리스트로 초기화
-                .build();
+        DailyDiary diary = diaryRepository.findDailyDiaryByDate(memberId, saveDTO.getDate())
+                .orElse(null);
+
+        if (diary == null) {
+            // 객체가 존재하지 않으면 새로 생성
+            diary = DailyDiary.builder()
+                    .date(saveDTO.getDate())
+                    .emotion(EmotionList.fromString(saveDTO.getEmotion()))
+                    .memberInfo(memberInfo)
+                    .impressiveThing(saveDTO.getImpressiveThing())
+                    .title(saveDTO.getTitle())
+                    .content(saveDTO.getContent())
+                    .diaryImageList(new ArrayList<>())  // 빈 리스트로 초기화
+                    .build();
+        } else {
+            // 존재하면 업데이트
+            diary.setEmotion(EmotionList.fromString(saveDTO.getEmotion()));
+            diary.setImpressiveThing(saveDTO.getImpressiveThing());
+            diary.setTitle(saveDTO.getTitle());
+            diary.setContent(saveDTO.getContent());
+        }
 
         // 일기 레포에 일기 저장 (이 때 diary와 연결된 DiaryImage도 함께 저장)
         diaryRepository.save(diary);  // 일기 객체와 이미지들 모두 저장됨
