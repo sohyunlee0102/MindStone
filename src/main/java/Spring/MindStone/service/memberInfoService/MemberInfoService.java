@@ -3,11 +3,14 @@ package Spring.MindStone.service.memberInfoService;
 import Spring.MindStone.apiPayload.code.status.ErrorStatus;
 import Spring.MindStone.apiPayload.exception.handler.MemberInfoHandler;
 import Spring.MindStone.domain.enums.Status;
+import Spring.MindStone.domain.listener.ListenerUtil;
 import Spring.MindStone.domain.member.MemberInfo;
 import Spring.MindStone.service.tokenBlacklistService.TokenBlacklistService;
 import Spring.MindStone.web.dto.memberDto.MemberInfoRequestDTO;
 import Spring.MindStone.repository.memberRepository.MemberInfoRepository;
 import Spring.MindStone.web.dto.memberDto.MemberInfoResponseDTO;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,10 +20,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class MemberInfoService {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final MemberInfoRepository memberInfoRepository;
     private final PasswordEncoder passwordEncoder;
@@ -29,8 +36,22 @@ public class MemberInfoService {
     // 멤버 등록
     @Transactional
     public MemberInfoResponseDTO.JoinResultDTO joinMember(MemberInfoRequestDTO.JoinDto request) {
-        if (memberInfoRepository.existsByEmail(request.getEmail())) {
-            throw new MemberInfoHandler(ErrorStatus.EMAIL_ALREADY_EXISTS);
+        ListenerUtil.disableListener();
+
+        Optional<MemberInfo> existingMemberOpt = memberInfoRepository.findByEmail(request.getEmail());
+
+        if (existingMemberOpt.isPresent()) {
+            MemberInfo exisingMember = existingMemberOpt.get();
+
+            if (exisingMember.getStatus() == Status.INACTIVE) {
+                exisingMember.setStatus(Status.ACTIVE);
+                exisingMember.setInactiveDate(null);
+                memberInfoRepository.save(exisingMember);
+                ListenerUtil.enableListener();
+                return new MemberInfoResponseDTO.JoinResultDTO(exisingMember.getId(), LocalDateTime.now());
+            } else {
+                throw new MemberInfoHandler(ErrorStatus.EMAIL_ALREADY_EXISTS);
+            }
         }
 
         // 온보딩 이전 Not Null 필드의 디폴트 값 설정
@@ -69,6 +90,9 @@ public class MemberInfoService {
         newMemberInfo.encodePassword(passwordEncoder.encode(request.getPassword()));
 
         memberInfoRepository.save(newMemberInfo);
+
+        ListenerUtil.enableListener();
+
         return new MemberInfoResponseDTO.JoinResultDTO(newMemberInfo.getId(), LocalDateTime.now());
     }
 
