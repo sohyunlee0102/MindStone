@@ -108,7 +108,7 @@ public class DiaryRestController {
     @PatchMapping("")
     @Operation(summary = "일기수정")
     public ApiResponse<SimpleDiaryDTO> updateDiary(
-            @Valid @RequestBody DiaryUpdateDTO diaryDTO,
+            @Valid @RequestPart DiaryUpdateDTO diaryDTO,
             @RequestPart(value = "image", required = false) List<MultipartFile> images,
             @RequestHeader("Authorization") String authorization
     ){
