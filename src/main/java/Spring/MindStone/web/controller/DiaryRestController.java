@@ -109,12 +109,17 @@ public class DiaryRestController {
     @Operation(summary = "일기수정")
     public ApiResponse<SimpleDiaryDTO> updateDiary(
             @Valid @RequestBody DiaryUpdateDTO diaryDTO,
-            @RequestPart(value = "image", required = false) List<MultipartFile> image,
+            @RequestPart(value = "image", required = false) List<MultipartFile> images,
             @RequestHeader("Authorization") String authorization
     ){
         System.out.println("PATCH api/diary");
+        if (images == null) {
+            System.out.println("빈 배열");
+            images = new ArrayList<>();
+        }
+
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-        return ApiResponse.onSuccess(diaryCommandService.updateDiary(diaryDTO,memberId,image));
+        return ApiResponse.onSuccess(diaryCommandService.updateDiary(diaryDTO,memberId,images));
     }
 
     @GetMapping("/calendar")
