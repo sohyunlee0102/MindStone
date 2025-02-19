@@ -15,7 +15,7 @@ public interface DiaryCommandService {
     DiaryResponseDTO.DiaryCreationResponseDTO createDiaryRe(Long id, String bodyPart, LocalDate date);
 
     /** 일기 수정 **/
-    SimpleDiaryDTO updateDiary(DiaryUpdateDTO updateDTO, Long memberId, List<MultipartFile> image);
+    SimpleDiaryDTO updateDiary(DiaryUpdateDTO updateDTO, Long memberId, List<MultipartFile> images);
 
     /** 일기 저장 **/
     SimpleDiaryDTO saveDiary(DiarySaveDTO saveDTO, Long memberId, List<MultipartFile> images);
