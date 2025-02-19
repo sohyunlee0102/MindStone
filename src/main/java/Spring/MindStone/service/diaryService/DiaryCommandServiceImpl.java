@@ -144,7 +144,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
 
 
-    public SimpleDiaryDTO updateDiary(DiaryUpdateDTO updateDTO, Long memberId, List<MultipartFile> image){
+    public SimpleDiaryDTO updateDiary(DiaryUpdateDTO updateDTO, Long memberId, List<MultipartFile> images){
         //날짜
         DailyDiary diary =diaryRepository.findDailyDiaryByDate(memberId, updateDTO.getDate())
                 .orElseThrow(() ->new MemberInfoHandler(ErrorStatus.DIARY_NOT_FOUND));
@@ -156,7 +156,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         diary.update(updateDTO);//내용이나 돌 모양이 변형
 
         //이미지의 수정 사항이 있다면 이미지 변경 진행
-        if(image == null||image.isEmpty()){
+        if(images == null||images.isEmpty()){
 
         }else{
             List<DiaryImage> diaryImageList = diary.getDiaryImageList();
@@ -170,7 +170,7 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
             diary.getDiaryImageList().clear();
 
             //새로 바뀐 이미지 리스트 저장
-            diary.setDiaryImageList(setAwsStore(diary, image));
+            diary.setDiaryImageList(setAwsStore(diary, images));
         }
 
         //바뀐 내용 반영
