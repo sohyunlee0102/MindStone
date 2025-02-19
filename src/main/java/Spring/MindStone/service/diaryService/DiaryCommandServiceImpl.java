@@ -155,22 +155,20 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
         diary.update(updateDTO);//내용이나 돌 모양이 변형
 
-        //이미지의 수정 사항이 있다면 이미지 변경 진행
-        if(images == null||images.isEmpty()){
-
-        }else{
+        // 3. 이미지 업데이트
+        if (images != null && !images.isEmpty()) {
             List<DiaryImage> diaryImageList = diary.getDiaryImageList();
 
-            //1. 이미지 리스트의 aws와 레포에서 삭제
-            for (DiaryImage diaryImage : diaryImageList) {
+            // 3-1. 기존 이미지 AWS에서 삭제 후 레포에서도 제거
+            for (Iterator<DiaryImage> iterator = diaryImageList.iterator(); iterator.hasNext();) {
+                DiaryImage diaryImage = iterator.next();
                 fileService.deleteFile(diaryImage.getImagePath());
-                //diaryImageRepository.delete(diaryImage);
+                iterator.remove();  // 리스트에서 안전하게 제거 (JPA orphanRemoval과 충돌 방지)
             }
-            //diary repo에서도 밀어버리기, orphan true라 claer하면 다 지워짐
-            diary.getDiaryImageList().clear();
 
-            //새로 바뀐 이미지 리스트 저장
-            diary.setDiaryImageList(setAwsStore(diary, images));
+            // 3-2. 새로운 이미지 리스트 추가
+            List<DiaryImage> newImages = setAwsStore(diary, images);
+            diaryImageList.addAll(newImages); // 기존 리스트에 추가
         }
 
         //바뀐 내용 반영
