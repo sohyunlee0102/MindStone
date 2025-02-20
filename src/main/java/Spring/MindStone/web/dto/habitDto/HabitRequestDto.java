@@ -71,11 +71,8 @@ public class HabitRequestDto {
 
         @NotBlank
         String comment;
-        @NotNull
         LocalDateTime startTime;
-        @NotNull
         LocalDateTime endTime;
-        @NotNull
         HabitColor habitColor;
         @NotNull
         Long habitId;
@@ -86,12 +83,22 @@ public class HabitRequestDto {
     @Setter
     public static class UpdateHabitHistoryDto {
 
-        @NotNull
         Long habitHistoryId;
-        String comment;
+        Long executionId;
         LocalDateTime startTime;
         LocalDateTime endTime;
         HabitColor habitColor;
-
+        String comment;
     }
+
+    @Getter
+    @Setter
+    public static class CreateHabitExecutionDto {
+
+        @NotNull
+        Long habitHistoryId;
+        LocalDateTime startTime;
+        LocalDateTime endTime;
+    }
+
 }

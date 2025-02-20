@@ -2,9 +2,17 @@ package Spring.MindStone.web.dto.emotionDto;
 
 import Spring.MindStone.domain.diary.DailyEmotionStatistic;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Builder
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SimpleEmotionStatisticDto {
     @Schema(description = "통계가 저장된 날짜", example = "2024-02-01")
     private LocalDate date;
