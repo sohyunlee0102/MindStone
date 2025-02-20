@@ -23,7 +23,7 @@ public class  DailyEmotionStatisticService {
 
     public DailyEmotionStatistic saveStatistics(MemberInfo memberInfo, LocalDate date, EmotionList emotion, int figure) {
         DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(LocalDate.now(ZoneId.of("Asia/Seoul")),memberInfo)
-                .orElseGet(() -> new DailyEmotionStatistic(memberInfo, date)); // 없으면 생성
+                .orElseGet(() -> new DailyEmotionStatistic(memberInfo, LocalDate.now(ZoneId.of("Asia/Seoul")))); // 없으면 생성
 
         //여기서 감정들에 추가되는 수치만큼 더해줌.
         statistics.updateEmotion(emotion, figure);

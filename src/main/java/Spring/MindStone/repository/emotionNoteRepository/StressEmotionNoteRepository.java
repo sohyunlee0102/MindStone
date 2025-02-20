@@ -20,4 +20,12 @@ public interface StressEmotionNoteRepository extends JpaRepository<StressEmotion
              @Param("startOfDay") LocalDateTime startOfDay,
              @Param("endOfDay") LocalDateTime endOfDay,
              Sort sort);
+
+    @Query("SELECT COUNT(hh) FROM StressEmotionNote hh " +
+            "WHERE hh.memberInfo.id = :memberId " +
+            "AND YEAR(hh.createdAt) = :year " +
+            "AND MONTH(hh.createdAt) = :month")
+    int countStressEmotionNoteByMonth(@Param("memberId") Long memberId,
+                                    @Param("year") int year,
+                                    @Param("month") int month);
 }
