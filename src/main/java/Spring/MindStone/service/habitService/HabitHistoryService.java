@@ -52,10 +52,7 @@ public class HabitHistoryService {
     public List<HabitResponseDto.HabitHistoryWithExecutionDTO> getHabitsForDate(Long memberId, LocalDate date) {
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
 
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(23, 59, 59);
-
-        List<HabitHistory> habitHistories = habitHistoryRepository.findByMemberInfoAndCreatedAtBetween(memberInfo, startOfDay, endOfDay);
+        List<HabitHistory> habitHistories = habitHistoryRepository.findByMemberInfoAndDate(memberInfo, date);
 
         return habitHistories.stream()
                 .map(habitHistory -> new HabitResponseDto.HabitHistoryWithExecutionDTO(
@@ -81,6 +78,7 @@ public class HabitHistoryService {
                 .habit(habit)
                 .comment(request.getComment())
                 .habitHistoryColor(request.getHabitColor())
+                .date(request.getDate())
                 .build();
 
         habitHistoryRepository.save(habitHistory);
@@ -132,7 +130,9 @@ public class HabitHistoryService {
     }
 
     @Transactional
-    public Long addHabitExecution(HabitRequestDto.CreateHabitExecutionDto request) {
+    public Long addHabitExecution(Long memberId, HabitRequestDto.CreateHabitExecutionDto request) {
+        MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
+
         HabitHistory habitHistory = habitHistoryRepository.findById(request.getHabitHistoryId())
                 .orElseThrow(() -> new HabitHandler(ErrorStatus.HABIT_HISTORY_NOT_FOUND));
 
@@ -154,6 +154,7 @@ public class HabitHistoryService {
                 .habitHistory(habitHistory)
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())
+                .memberInfo(memberInfo)
                 .build();
 
         habitHistory.getExecutions().add(habitExecution);

@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class DailyEmotionStatisticService {
+public class  DailyEmotionStatisticService {
     private final DailyEmotionStatisticRepository dailyEmotionStatisticRepository;
     private final MemberInfoService memberInfoService;
 

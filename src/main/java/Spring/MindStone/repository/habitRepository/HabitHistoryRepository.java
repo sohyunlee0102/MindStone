@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long> {
 
-    List<HabitHistory> findByMemberInfoAndCreatedAtBetween(MemberInfo memberInfo, LocalDateTime startDate, LocalDateTime endDate);
+    List<HabitHistory> findByMemberInfoAndDate(MemberInfo memberInfo, LocalDate date);
 
     /*
     // 특정 날짜에 사용자가 기록한(달성한) 습관 개수 조회
@@ -150,4 +150,5 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
     Long findMostCompletedHabit(@Param("memberId") Long memberId,
                                 @Param("year") int year,
                                 @Param("month") int month);
+
 }
