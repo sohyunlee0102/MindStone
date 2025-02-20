@@ -25,6 +25,9 @@ public class HabitReportResponseDto {
     @Schema(description = "주별 활동 시간 (분)")
     private List<WeeklyData> weeklyActiveTime;
 
+    @Schema(description = "주별 활동 횟수")
+    private List<WeeklyData> weeklyHabitCounts;
+
     @Getter
     @AllArgsConstructor
     public static class WeeklyData {
