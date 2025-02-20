@@ -36,7 +36,7 @@ public class HabitHistory extends BaseEntity {
     private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private HabitColor habitHistoryColor; // 습관 기록 별 색깔
 
     @ManyToOne(fetch = FetchType.LAZY)
