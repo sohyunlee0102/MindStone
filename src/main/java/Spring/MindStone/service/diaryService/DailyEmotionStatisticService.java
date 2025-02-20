@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.NoSuchElementException;
 
 @Service
@@ -21,7 +22,7 @@ public class DailyEmotionStatisticService {
 
 
     public DailyEmotionStatistic saveStatistics(MemberInfo memberInfo, LocalDate date, EmotionList emotion, int figure) {
-        DailyEmotionStatistic statistics = (DailyEmotionStatistic) dailyEmotionStatisticRepository.findByDateAndMemberInfo(date,memberInfo)
+        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(LocalDate.now(ZoneId.of("Asia/Seoul")),memberInfo)
                 .orElseGet(() -> new DailyEmotionStatistic(memberInfo, date)); // 없으면 생성
 
         //여기서 감정들에 추가되는 수치만큼 더해줌.
@@ -32,16 +33,16 @@ public class DailyEmotionStatisticService {
 
     public SimpleEmotionStatisticDto getStatistic(Long memberId) {
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
-        DailyEmotionStatistic statistics = (DailyEmotionStatistic) dailyEmotionStatisticRepository.findByDateAndMemberInfo(LocalDate.now(),memberInfo)
-                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.now())) );
+        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(LocalDate.now(ZoneId.of("Asia/Seoul")),memberInfo)
+                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.now(ZoneId.of("Asia/Seoul")))) );
 
         return new SimpleEmotionStatisticDto(statistics);
     }
 
     public DailyEmotionStatistic getStatisticEntity(Long memberId) {
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
-        DailyEmotionStatistic statistics = (DailyEmotionStatistic) dailyEmotionStatisticRepository.findByDateAndMemberInfo(LocalDate.now(),memberInfo)
-                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.now())) );
+        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(LocalDate.now(ZoneId.of("Asia/Seoul")),memberInfo)
+                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.now(ZoneId.of("Asia/Seoul")))) );
         return statistics;
     }
 
