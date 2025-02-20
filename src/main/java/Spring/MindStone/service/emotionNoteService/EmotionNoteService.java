@@ -106,7 +106,7 @@ public class EmotionNoteService {
         //1페이지 계산
         EmotionReportResponseDTO.WeeklyRecord monthlyList = new EmotionReportResponseDTO.WeeklyRecord();
         for(int i = 0; i < weeks; i++){
-            monthlyList = weeklyStatisticList.get(i);
+            monthlyList.add(weeklyStatisticList.get(i));
         }
 
         String bestEmotion = monthlyList.getHighestEmotion();
