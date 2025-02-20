@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,22 +79,23 @@ public class EmotionNoteService {
 
         EmotionReportResponseDTO result = new EmotionReportResponseDTO();
 
-        //2번째 페이지 작업, WeeklyRecord를 만들어서 dto에 넣는다.
-        int weeks = Math.min(4, (totalDaysInMonth + 6) / 7); // 최대 4주까지만 허용
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        int weeks = Math.min(4, (totalDaysInMonth + startOfMonth.getDayOfWeek().getValue()) / 7); // 최대 4주까지만 허용
 
-        //dto에 저장해야할 내용
+        // dto에 저장해야할 내용
         List<EmotionReportResponseDTO.WeeklyRecord> weeklyStatisticList = new ArrayList<>();
-
         for (int i = 0; i < weeks; i++) {
             weeklyStatisticList.add(new EmotionReportResponseDTO.WeeklyRecord()); // 기본값 0으로 초기화된 객체 추가
         }
 
-        for (int day = 0; day < totalDaysInMonth; day++) {
-            int weekIndex = Math.min(day / 7, 3); // 0~6 -> 0, 7~13 -> 1, ..., 28 이상 -> 3
+// statisticList의 날짜를 기준으로 주차 계산
+        for (DailyEmotionStatistic statistic : statisticList) {
+            LocalDate currentDate = statistic.getDate(); // 해당 감정 데이터의 날짜
+            int daysFromStart = (int) ChronoUnit.DAYS.between(startOfMonth, currentDate);
+            int weekIndex = Math.min(daysFromStart / 7, 3); // 최대 index 3 (4주 제한)
+
             EmotionReportResponseDTO.WeeklyRecord weekRecord = weeklyStatisticList.get(weekIndex);
-            //엔티티 직접 더해주기
-            EmotionReportResponseDTO.WeeklyRecord dayRecord =
-                    new EmotionReportResponseDTO.WeeklyRecord(statisticList.get(day));
+            EmotionReportResponseDTO.WeeklyRecord dayRecord = new EmotionReportResponseDTO.WeeklyRecord(statistic);
 
             weekRecord.add(dayRecord);
         }
@@ -146,7 +148,7 @@ public class EmotionNoteService {
     }
 
     String emotionSummary(Long id,int year, int month, double percentage,
-    EmotionReportResponseDTO.WeeklyRecord monthlyRecord){
+                          EmotionReportResponseDTO.WeeklyRecord monthlyRecord){
         int previousMonth;
         int previousYear;
         if(month == 1){
