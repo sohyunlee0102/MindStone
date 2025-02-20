@@ -39,7 +39,8 @@ jobs:
         shell: cmd
         run: |
           mkdir src\main\resources 2>nul || echo Directory exists
-          echo ${{ secrets.YML }} > src\main\resources\application.yml
+          echo | set /p=">${{ secrets.YML }}" > src\main\resources\application.yml
+
 
 
 
