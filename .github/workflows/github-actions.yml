@@ -36,11 +36,13 @@ jobs:
 
       # application.yml 생성 (Windows PowerShell 명령어 사용)
       - name: make application.yml
-        shell: pwsh
+        shell: powershell
         run: |
           $path = ".\src\main\resources"
-          if (!(Test-Path $path)) { New-Item -ItemType Directory -Path $path }
+          if (!(Test-Path $path)) { New-Item -ItemType Directory -Path $path -Force }
           Set-Content -Path "$path\application.yml" -Value "${{ secrets.YML }}"
+
+
 
       # Gradle 빌드 (Windows 환경)
       - name: Build with Gradle
