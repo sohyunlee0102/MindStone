@@ -1,5 +1,6 @@
 package Spring.MindStone.web.controller;
 
+import Spring.MindStone.apiPayload.ApiResponse;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
 import Spring.MindStone.service.emotionNoteService.EmotionNoteService;
 import Spring.MindStone.web.dto.emotionDto.EmotionReportResponseDTO;
@@ -19,12 +20,12 @@ public class EmotionReportController {
 
     @Operation(summary = "감정 리포트 조회 API", description = "사용자의 특정 년/월 감정 리포트를 조회합니다.")
     @GetMapping
-    public ResponseEntity<EmotionReportResponseDTO> getEmotionReport(
+    public ApiResponse<EmotionReportResponseDTO> getEmotionReport(
             @RequestHeader("Authorization") String authorization,
             @RequestParam int year,
             @RequestParam int month) {
 
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-        return ResponseEntity.ok(emotionNoteService.getEmotionCallendarReport(memberId, year, month));
+        return ApiResponse.onSuccess(emotionNoteService.getEmotionCallendarReport(memberId, year, month));
     }
 }
