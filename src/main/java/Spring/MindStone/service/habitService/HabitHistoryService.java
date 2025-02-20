@@ -52,10 +52,7 @@ public class HabitHistoryService {
     public List<HabitResponseDto.HabitHistoryWithExecutionDTO> getHabitsForDate(Long memberId, LocalDate date) {
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
 
-        LocalDateTime startOfDay = date.atStartOfDay();
-        LocalDateTime endOfDay = date.atTime(23, 59, 59);
-
-        List<HabitHistory> habitHistories = habitHistoryRepository.findByMemberInfoAndCreatedAtBetween(memberInfo, startOfDay, endOfDay);
+        List<HabitHistory> habitHistories = habitHistoryRepository.findByMemberInfoAndDate(memberInfo, date);
 
         return habitHistories.stream()
                 .map(habitHistory -> new HabitResponseDto.HabitHistoryWithExecutionDTO(
@@ -81,6 +78,7 @@ public class HabitHistoryService {
                 .habit(habit)
                 .comment(request.getComment())
                 .habitHistoryColor(request.getHabitColor())
+                .date(request.getDate())
                 .build();
 
         habitHistoryRepository.save(habitHistory);
