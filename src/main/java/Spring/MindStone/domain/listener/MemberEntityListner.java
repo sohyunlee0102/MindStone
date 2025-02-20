@@ -13,7 +13,7 @@ public class MemberEntityListner {
     @PostLoad
     public void filterInactiveMembers(MemberInfo member) {
         if (!ListenerUtil.isListenerEnabled()) {
-            return; // 리스너 비활성화 상태에서는 동작하지 않음
+            return;
         }
 
         if (member.getStatus() == Status.INACTIVE) {
