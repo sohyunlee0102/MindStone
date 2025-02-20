@@ -36,12 +36,11 @@ jobs:
 
       # application.yml 생성 (Windows PowerShell 명령어 사용)
       - name: make application.yml
-        shell: powershell
+        shell: cmd
         run: |
-          Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-          $path = ".\src\main\resources"
-          if (!(Test-Path $path)) { New-Item -ItemType Directory -Path $path -Force }
-          Set-Content -Path "$path\application.yml" -Value "${{ secrets.YML }}"
+          mkdir src\main\resources 2>nul || echo Directory exists
+          echo ${{ secrets.YML }} > src\main\resources\application.yml
+
 
 
 
