@@ -76,8 +76,9 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
         //1. EmotionNoteService에서 멤버의 하루 일들을 갖고옴.
 
-        List<EmotionNote> emotionNoteList = emotionNoteService.getNotesByIdAndDate(id, date);
-        List<StressEmotionNote> stressEmotionNoteList = emotionNoteService.getStressNotesByIdAndDate(id, date);
+        MemberInfo memberInfo = memberInfoService.findMemberById(id);
+        List<EmotionNote> emotionNoteList = emotionNoteService.getNotesByIdAndDate(memberInfo, date);
+        List<StressEmotionNote> stressEmotionNoteList = emotionNoteService.getStressNotesByIdAndDate(memberInfo, date);
 
 
         //두 노트를 합침
@@ -94,16 +95,23 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
 
         //3.result를 프롬프트와 함께 제작
         List<ChatMessage> chatPrompt = List.of(
-                new ChatMessage(USER, "아침 운동, 기쁨, 50"),
-                new ChatMessage(ASSISTANT, "아침에 일어나서 운동을 하니깐 그래도 상쾌한 기분이었다."),
-                new ChatMessage(USER, "회의 참석, 분노, 300"),
-                new ChatMessage(ASSISTANT, "회의 참석을 하니 아침 운동의 기쁨이 사라질정도로 화났다."),
-                new ChatMessage(USER, "점심 식사, 만족, 150"),
-                new ChatMessage(ASSISTANT, "그래도 점심 식사를 하니 꽤나 만족스러웠다."),
-                new ChatMessage(USER, "업무 마감, 성취감, 450"),
-                new ChatMessage(ASSISTANT, "업무 마감까지 하니 매우 성취감이 컸다."),
-                new ChatMessage(USER, "ㅇㅁㄴㅇ, 분노, 50"),
-                new ChatMessage(ASSISTANT, "이유 없이 분노가 좀 차올랐다."),
+                new ChatMessage(USER, "아침 운동, JOY, 60"),
+                new ChatMessage(ASSISTANT, "아침에 상쾌하게 운동을 하고 나니 기분이 한결 좋아졌다."),
+
+                new ChatMessage(USER, "출근길, SAD, 30"),
+                new ChatMessage(ASSISTANT, "출근길에 사람들도 많고 지치면서 기분이 조금 가라앉았다."),
+
+                new ChatMessage(USER, "회의 참석, ANGER, 80"),
+                new ChatMessage(ASSISTANT, "회의 내내 답답한 말만 오가서 점점 화가 치밀었다."),
+
+                new ChatMessage(USER, "커피 한 잔, CALM, 50"),
+                new ChatMessage(ASSISTANT, "그 때문에 커피 한 잔을 마시면서 마음을 조금 가라앉혔다."),
+
+                new ChatMessage(USER, "업무 마감, HAPPINESS, 90"),
+                new ChatMessage(ASSISTANT, "오늘 하루 일을 끝내고 나니 정말 뿌듯하고 행복했다."),
+
+                new ChatMessage(USER, "ㅇㅁㄴㅇ, ANGER, 20"),
+                new ChatMessage(ASSISTANT, "이유 없이 조금 짜증이 났다."),
                 new ChatMessage(USER, result)
         );
 
@@ -121,19 +129,29 @@ public class DiaryCommandServiceImpl implements DiaryCommandService {
         checkGPTCount(id);
 
         List<ChatMessage> chatPrompt = List.of(
-                new ChatMessage(USER, "아침 운동, 기쁨, 50"),
-                new ChatMessage(ASSISTANT, "아침에 일어나서 운동을 하니깐 그래도 상쾌한 기분이었다."),
-                new ChatMessage(USER, "회의 참석, 분노, 300"),
-                new ChatMessage(ASSISTANT, "회의 참석을 하니 아침 운동의 기쁨이 사라질정도로 화났다."),
-                new ChatMessage(USER, "점심 식사, 만족, 150"),
-                new ChatMessage(ASSISTANT, "그래도 점심 식사를 하니 꽤나 만족스러웠다."),
-                new ChatMessage(USER, "업무 마감, 성취감, 450"),
-                new ChatMessage(ASSISTANT, "업무 마감까지 하니 매우 성취감이 컸다."),
-                new ChatMessage(USER, "ㅇㅁㄴㅇ, 분노, 50"),
-                new ChatMessage(ASSISTANT, "이유 없이 분노가 좀 차올랐다."),
+                new ChatMessage(USER, "아침 운동, JOY, 60"),
+                new ChatMessage(ASSISTANT, "아침에 상쾌하게 운동을 하고 나니 기분이 한결 좋아졌다."),
+
+                new ChatMessage(USER, "출근길, SAD, 30"),
+                new ChatMessage(ASSISTANT, "출근길에 사람들도 많고 지치면서 기분이 조금 가라앉았다."),
+
+                new ChatMessage(USER, "회의 참석, ANGER, 80"),
+                new ChatMessage(ASSISTANT, "회의 내내 답답한 말만 오가서 점점 화가 치밀었다."),
+
+                new ChatMessage(USER, "커피 한 잔, CALM, 50"),
+                new ChatMessage(ASSISTANT, "그 때문에 커피 한 잔을 마시면서 마음을 조금 가라앉혔다."),
+
+                new ChatMessage(USER, "업무 마감, HAPPINESS, 90"),
+                new ChatMessage(ASSISTANT, "오늘 하루 일을 끝내고 나니 정말 뿌듯하고 행복했다."),
+
+                new ChatMessage(USER, "ㅇㅁㄴㅇ, ANGER, 20"),
+                new ChatMessage(ASSISTANT, "이유 없이 조금 짜증이 났다."),
+
                 new ChatMessage(USER, "재생성 해줘"),
                 new ChatMessage(SYSTEM, "Rewrite the diary with a different perspective or tone while keeping it coherent."),
+
                 new ChatMessage(USER, bodyPart)
+
         );
 
         //4. 프롬프트와 생성하는 함수와 GPT API를 실행

@@ -43,6 +43,16 @@ public class HabitReportService {
                 .map(data -> new HabitReportResponseDto.WeeklyData((int) data[0], (long) data[1], (long) data[2]))
                 .collect(Collectors.toList());
 
-        return new HabitReportResponseDto(recordPercentage, achievementGrowth, topHabit, weeklyAchievementRates, weeklyActiveTime);
+        // 주별 활동 횟수
+        List<Object[]> weeklyHabitCountsData = habitHistoryRepository.getWeeklyHabitCounts(memberId, year, month);
+        List<HabitReportResponseDto.WeeklyData> weeklyHabitCounts = weeklyHabitCountsData.stream()
+                .map(data -> new HabitReportResponseDto.WeeklyData(
+                        ((Number) data[0]).intValue(), // 주차
+                        ((Number) data[1]).longValue(), // 습관 ID
+                        ((Number) data[2]).longValue() // 활동 횟수
+                ))
+                .collect(Collectors.toList());
+
+        return new HabitReportResponseDto(recordPercentage, achievementGrowth, topHabit, weeklyAchievementRates, weeklyActiveTime,weeklyHabitCounts);
     }
 }

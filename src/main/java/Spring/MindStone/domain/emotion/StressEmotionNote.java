@@ -37,6 +37,6 @@ public class StressEmotionNote extends BaseEntity {
 
     @Override
     public String toString() {
-        return "그때문에 스트레스로 " +content +"," + emotion +"," + emotionFigure;
+        return "그때문에 " +content +"," + emotion +"," + emotionFigure;
     }
 }
