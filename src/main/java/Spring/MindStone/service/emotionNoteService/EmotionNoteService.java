@@ -125,7 +125,7 @@ public class EmotionNoteService {
             default -> "무감정"; // 예외 처리
         };
 
-        double percentage = ((double) totalDaysInMonth/recordedDays) * 100;
+        double percentage = ((double) recordedDays/totalDaysInMonth) * 100;
         String formattedPercentage = String.format("%.1f", percentage);
 
         String totalReport;
@@ -161,7 +161,7 @@ public class EmotionNoteService {
         List<DailyEmotionStatistic> statisticList = dailyEmotionStatisticRepository.findStatisticByDate(id, previousYear, previousMonth);
         int totalDaysInMonth = YearMonth.of(previousYear, previousMonth).lengthOfMonth();
         int recordedDays = statisticList.size();
-        double previousPercentage = ((double) totalDaysInMonth/recordedDays) * 100;
+        double previousPercentage = ((double) recordedDays/totalDaysInMonth) * 100;
 
 
         String firstSummary;
