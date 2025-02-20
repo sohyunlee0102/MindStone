@@ -12,7 +12,6 @@ public class MemberEntityListner {
 
     @PostLoad
     public void filterInactiveMembers(MemberInfo member) {
-        // 리스너가 활성화된 경우에만 동작
         if (!ListenerUtil.isListenerEnabled()) {
             return; // 리스너 비활성화 상태에서는 동작하지 않음
         }
