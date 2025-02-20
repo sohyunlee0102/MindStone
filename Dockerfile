@@ -1,7 +1,7 @@
 FROM openjdk:17-jdk-slim
 
 # JAR 파일 경로를 변수로 지정 (정확한 파일명 사용)
-ARG JAR_FILE=build/libs/myapp.jar  
+ARG JAR_FILE=build/libs/MindStone-0.0.1-SNAPSHOT.jar  
 
 # JAR 파일을 컨테이너로 복사
 COPY ${JAR_FILE} app.jar
