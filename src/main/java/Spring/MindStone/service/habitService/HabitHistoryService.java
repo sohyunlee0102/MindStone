@@ -132,7 +132,9 @@ public class HabitHistoryService {
     }
 
     @Transactional
-    public Long addHabitExecution(HabitRequestDto.CreateHabitExecutionDto request) {
+    public Long addHabitExecution(Long memberId, HabitRequestDto.CreateHabitExecutionDto request) {
+        MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
+
         HabitHistory habitHistory = habitHistoryRepository.findById(request.getHabitHistoryId())
                 .orElseThrow(() -> new HabitHandler(ErrorStatus.HABIT_HISTORY_NOT_FOUND));
 
@@ -154,6 +156,7 @@ public class HabitHistoryService {
                 .habitHistory(habitHistory)
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())
+                .memberInfo(memberInfo)
                 .build();
 
         habitHistory.getExecutions().add(habitExecution);
