@@ -80,10 +80,10 @@ public class HabitController {
 
     @GetMapping("/habitHistory/{date}")
     @Operation(summary = "특정 날짜 습관 가져오기 API", description = "습관 달력의 특정 날짜에 기록한 습관 기록을 가져오는 API 입니다.")
-    public ApiResponse<List<HabitResponseDto.HabitHistoryDTO>> getHabitsForNow (@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+    public ApiResponse<List<HabitResponseDto.HabitHistoryWithExecutionDTO>> getHabitsForNow (@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                                                                   @RequestHeader("Authorization") String authorization) {
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-        List<HabitResponseDto.HabitHistoryDTO> habitsForDate = habitHistoryService.getHabitsForDate(memberId, date);
+        List<HabitResponseDto.HabitHistoryWithExecutionDTO> habitsForDate = habitHistoryService.getHabitsForDate(memberId, date);
 
         return ApiResponse.onSuccess(habitsForDate);
     }
@@ -96,10 +96,18 @@ public class HabitController {
         return ApiResponse.onSuccess(habitHistoryService.addHabitHistory(memberId, request));
     }
 
+    @PostMapping("/habitExecution")
+    @Operation(summary = "습관 실행 시간 추가 API", description = "특정 날짜의 습관 실행 시간을 추가하는 API 입니다.")
+    public ApiResponse<Long> addHabitExecution(@Valid @RequestBody HabitRequestDto.CreateHabitExecutionDto request,
+                                               @RequestHeader("Authorization") String authorization) {
+        return ApiResponse.onSuccess(habitHistoryService.addHabitExecution(request));
+    }
+
     @PatchMapping("/habitHistory")
     @Operation(summary = "습관 기록 수정 API", description = "특정 날짜의 습관 기록을 수정하는 API 입니다. 수정할 필드 이외에는 null 로 전달해 주세요.")
-    public ApiResponse<Long> updateHabitHistory(@Valid @RequestBody HabitRequestDto.UpdateHabitHistoryDto request) {
-        return ApiResponse.onSuccess(habitHistoryService.updateHabitHistory(request));
+    public ApiResponse<String> updateHabitHistory(@Valid @RequestBody HabitRequestDto.UpdateHabitHistoryDto request) {
+        habitHistoryService.updateHabitHistory(request);
+        return ApiResponse.onSuccess("수정이 완료되었습니다.");
     }
 
 }

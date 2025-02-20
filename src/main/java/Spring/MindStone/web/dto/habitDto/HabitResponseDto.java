@@ -1,6 +1,7 @@
 package Spring.MindStone.web.dto.habitDto;
 
 import Spring.MindStone.domain.enums.HabitColor;
+import Spring.MindStone.domain.habit.HabitExecution;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class HabitResponseDto {
 
@@ -57,13 +59,22 @@ public class HabitResponseDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class HabitHistoryDTO {
+    public static class HabitHistoryWithExecutionDTO {
         Long habitHistoryId;
         String comment;
-        LocalDateTime startTime;
-        LocalDateTime endTime;
         HabitColor habitColor;
-
+        List<HabitExecutionDTO> executions;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HabitExecutionDTO {
+        private Long id;
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+    }
+
 
 }

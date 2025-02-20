@@ -15,9 +15,7 @@ import java.util.Optional;
 @Repository
 public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long> {
 
-    Optional<HabitHistory> findFirstByMemberInfoOrderByStartTimeDesc(MemberInfo memberInfo);
-
-    List<HabitHistory> findByMemberInfoAndStartTimeBetween(MemberInfo memberInfo, LocalDateTime startDate, LocalDateTime endDate);
+    List<HabitHistory> findByMemberInfoAndCreatedAtBetween(MemberInfo memberInfo, LocalDateTime startDate, LocalDateTime endDate);
 
     // 특정 날짜에 사용자가 기록한(달성한) 습관 개수 조회
     @Query("SELECT COUNT(hh) FROM HabitHistory hh " +
