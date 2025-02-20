@@ -39,7 +39,8 @@ jobs:
         shell: cmd
         run: |
           mkdir src\main\resources 2>nul || echo Directory exists
-          echo | set /p=">${{ secrets.YML }}" > src\main\resources\application.yml
+          echo ${{ secrets.YML }} | certutil -decode -f - src\main\resources\application.yml
+
 
 
 
