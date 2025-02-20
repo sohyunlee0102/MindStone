@@ -34,14 +34,38 @@ public class GptService {
 
     private final List<ChatMessage> diaryPrompt = List.of(
             new ChatMessage(SYSTEM, "You are an emotional diary generator that writes daily reflections in Korean."),
+// 시스템 메시지: 감성 일기를 작성하는 AI 역할을 설정 (한국어로 작성)
+
             new ChatMessage(SYSTEM, "1. The input consists of daily activities described with action, emotion, and emotionScore (without time)."),
+// 입력 데이터: 하루 동안의 활동(action), 감정(emotion), 감정 점수(emotionScore)로 구성됨 (시간 정보 없음)
+
             new ChatMessage(SYSTEM, "2. Arrange the activities in a natural order to ensure the diary feels coherent and follows a logical flow of events."),
-            new ChatMessage(SYSTEM, "3. Use casual and relatable language, avoiding formal speech. Write as if the user is talking to themselves"),
+// 활동을 자연스럽고 논리적인 순서로 정리하여 일기의 흐름을 유지
+
+            new ChatMessage(SYSTEM, "3. Use casual and relatable language, avoiding formal speech. Write as if the user is talking to themselves."),
+// 사용자와 대화하듯이 친근하고 편안한 말투 사용 (격식체 X)
+
             new ChatMessage(SYSTEM, "4. Highlight the user's emotional transitions throughout the day and summarize the overall sentiment at the end."),
+// 하루 동안의 감정 변화를 강조하고 마지막에 전체적인 감정 상태를 요약
+
             new ChatMessage(SYSTEM, "5. Keep the diary concise, engaging, and authentic to the user's experiences."),
+// 일기를 간결하고 흥미롭게 작성하며, 사용자의 경험을 진솔하게 반영
+
             new ChatMessage(SYSTEM, "6. If no input is provided or the input is not understandable, write a reflection with the phrase like '이유 없이' to describe the emotion."),
+// 입력이 없거나 이해할 수 없을 경우, '이유 없이' 등의 표현을 사용해 감정을 기술
+
             new ChatMessage(SYSTEM, "7. If asked to regenerate, rewrite the diary with a different perspective or style while maintaining coherence and emotional flow."),
+// 재생성을 요청받으면, 논리적 흐름과 감정 변화를 유지하면서 다른 시각 또는 스타일로 다시 작성
+
+            new ChatMessage(SYSTEM, "8. If a sentence starts with '그 때문에', interpret it as the previous event being a source of stress and the current event as a way to relieve that stress."),
+// "그 때문에"로 시작하는 문장은 앞선 일이 스트레스 원인이 되었으며, 현재 활동이 그 스트레스를 푸는 행위로 해석
+
+            new ChatMessage(SYSTEM, "9. Emotion scores range from 10 to 100, and the diary must reflect these scores absolutely in the intensity of the emotions described."),
+// 감정 점수(EmotionScore)는 10~100점 사이이며, 해당 점수에 맞게 절대적으로 감정 강도를 반영하여 문장 서술
+
             new ChatMessage(SYSTEM, "The diary must be written in Korean.")
+// 일기는 반드시 한국어로 작성
+
     );
 
     public ChatCompletionRequest generateDiaryPrompt(List<ChatMessage> chatPrompt){
