@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,15 +47,13 @@ public class HabitReportService {
         // 주별 활동 횟수
         List<Object[]> weeklyHabitCountsData = habitHistoryRepository.getWeeklyHabitCounts(memberId, year, month);
         List<HabitReportResponseDto.WeeklyData> weeklyHabitCounts = weeklyHabitCountsData.stream()
-                .map(data -> {
-                    int week = data[0] != null ? ((Number) data[0]).intValue() : 0; // 주차
-                    long habitId = data[1] != null ? ((Number) data[1]).longValue() : 0L; // 습관 ID
-                    long count = data[2] != null ? ((Number) data[2]).longValue() : 0L; // 활동 횟수
+                .map(data -> new HabitReportResponseDto.WeeklyData(
+                        ((Number) data[0]).intValue(),
+                        ((Number) data[1]).longValue(),
+                        ((BigDecimal) data[2]).longValue()
+                ))
 
-                    return new HabitReportResponseDto.WeeklyData(week, habitId, count);
-                })
                 .collect(Collectors.toList());
-
 
         return new HabitReportResponseDto(recordPercentage, achievementGrowth, topHabit, weeklyAchievementRates, weeklyActiveTime,weeklyHabitCounts);
     }
