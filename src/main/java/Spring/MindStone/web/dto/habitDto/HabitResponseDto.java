@@ -60,6 +60,7 @@ public class HabitResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class HabitHistoryWithExecutionDTO {
+        Long habitId;
         Long habitHistoryId;
         String comment;
         HabitColor habitColor;
