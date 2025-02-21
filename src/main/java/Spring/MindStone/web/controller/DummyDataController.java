@@ -21,7 +21,7 @@ public class DummyDataController {
 
     private final DummyService dummyService;
 
-    @PostMapping("/api/emotionStatistic")
+    @PostMapping("/emotionStatistic")
     @Operation(summary = "감정 통계 날짜로 만들기")
     ApiResponse<Long> makeDummyEmotionStatistic(
             @Valid @RequestBody DummyEmotionStatistic dummyEmotionStatistic,
