@@ -24,8 +24,8 @@ public class  DailyEmotionStatisticService {
 
 
     public DailyEmotionStatistic saveStatistics(MemberInfo memberInfo,LocalDate localDate , EmotionList emotion, int figure) {
-        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(localDate,memberInfo)
-                .orElseGet(() -> new DailyEmotionStatistic(memberInfo, localDate)); // 없으면 생성
+        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(LocalDate.of(2025, 2, 21),memberInfo)
+                .orElseGet(() -> new DailyEmotionStatistic(memberInfo, LocalDate.of(2025, 2, 21))); // 없으면 생성
 
 
         //여기서 감정들에 추가되는 수치만큼 더해줌.
@@ -37,8 +37,8 @@ public class  DailyEmotionStatisticService {
     public SimpleEmotionStatisticDto getStatistic(Long memberId) {
         LocalDate today = Instant.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
-        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(today,memberInfo)
-                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, today)) );
+        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(LocalDate.of(2025, 2, 21),memberInfo)
+                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.of(2025, 2, 21))) );
 
         return new SimpleEmotionStatisticDto(statistics);
     }
@@ -46,8 +46,8 @@ public class  DailyEmotionStatisticService {
     public DailyEmotionStatistic getStatisticEntity(Long memberId) {
         LocalDate today = Instant.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
         MemberInfo memberInfo = memberInfoService.findMemberById(memberId);
-        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(today,memberInfo)
-                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, today)) );
+        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(LocalDate.of(2025, 2, 21),memberInfo)
+                .orElseGet(() ->dailyEmotionStatisticRepository.save(new DailyEmotionStatistic(memberInfo, LocalDate.of(2025, 2, 21))) );
         return statistics;
     }
 

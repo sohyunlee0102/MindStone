@@ -44,12 +44,12 @@ public class EmotionNoteService {
                 .emotion(EmotionList.fromString(note.getEmotion()))
                 .content(note.getContent()).build();
 
-
+        emotionNoteRepository.save(emotionNote);
         //호출해서 감정이 저장될때마다 감정통계 엔티티를 추가로 업데이트 시킴.
-        dailyEmotionStatisticService.saveStatistics(memberInfo,emotionNote.getCreatedAt().toLocalDate()
+        dailyEmotionStatisticService.saveStatistics(memberInfo,LocalDate.now()
                 ,EmotionList.fromString(note.getEmotion()),note.getEmotionFigure());
 
-        emotionNoteRepository.save(emotionNote);
+
         return new SimpleEmotionNoteDTO(emotionNote);
     }
 
@@ -64,11 +64,11 @@ public class EmotionNoteService {
                 .content(request.getContent())
                 .stressNote(emotionNote)
                 .build();
-
-        dailyEmotionStatisticService.saveStatistics(memberInfo,stressEmotionNote.getCreatedAt().toLocalDate()
+        stressEmotionNoteRepository.save(stressEmotionNote);
+        dailyEmotionStatisticService.saveStatistics(memberInfo,LocalDate.now()
                 ,EmotionList.fromString(request.getEmotion()),request.getEmotionFigure());
 
-        stressEmotionNoteRepository.save(stressEmotionNote);
+
         return new SimpleEmotionNoteDTO(stressEmotionNote);
     }
 
