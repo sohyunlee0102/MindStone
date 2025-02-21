@@ -102,8 +102,8 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
                                     @Param("year") int year,
                                     @Param("month") int month);
 
-    // 특정 주별 습관 달성 횟수 조회 (리포트)
-    @Query(value = "SELECT WEEK(hh.created_at), hh.habit_id, COUNT(*) " +
+    // 주별 습관 달성 횟수 조회 (리포트)
+    @Query(value = "SELECT WEEK(hh.created_at), hh.habit_id, CAST(COUNT(*) AS SIGNED) " +
             "FROM habit_history hh " +
             "WHERE hh.member_id = :memberId " +
             "AND YEAR(hh.created_at) = :year " +
@@ -114,8 +114,8 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
                                         @Param("year") int year,
                                         @Param("month") int month);
 
-    // 특정 주별 활동 시간 조회 (리포트)
-    @Query(value = "SELECT WEEK(he.start_time), hh.habit_id, SUM(TIMESTAMPDIFF(MINUTE, he.start_time, COALESCE(he.end_time, he.start_time))) " +
+    // 주별 활동 시간 조회 (리포트)
+    @Query(value = "SELECT WEEK(he.start_time), hh.habit_id, CAST(SUM(TIMESTAMPDIFF(MINUTE, he.start_time, COALESCE(he.end_time, he.start_time))) AS SIGNED) " +
             "FROM habit_history hh " +
             "JOIN habit_execution he ON hh.id = he.habit_history_id " +
             "WHERE hh.member_id = :memberId " +
@@ -126,6 +126,7 @@ public interface HabitHistoryRepository extends JpaRepository<HabitHistory, Long
     List<Object[]> getWeeklyActiveTime(@Param("memberId") Long memberId,
                                        @Param("year") int year,
                                        @Param("month") int month);
+
 
     // 달성률 증가율 계산 (리포트)
     @Query(value = "SELECT (endRate - startRate) * 100.0 / NULLIF(startRate, 0) " +
