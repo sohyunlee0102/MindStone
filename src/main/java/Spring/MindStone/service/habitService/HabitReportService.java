@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,21 +38,26 @@ public class HabitReportService {
                 .map(data -> new HabitReportResponseDto.WeeklyData((int) data[0], (long) data[1], (long) data[2]))
                 .collect(Collectors.toList());
 
-        // 주별 활동 시간
-        List<Object[]> weeklyActiveTimeData = habitHistoryRepository.getWeeklyActiveTime(memberId, year, month);
-        List<HabitReportResponseDto.WeeklyData> weeklyActiveTime = weeklyActiveTimeData.stream()
-                .map(data -> new HabitReportResponseDto.WeeklyData((int) data[0], (long) data[1], (long) data[2]))
-                .collect(Collectors.toList());
-
-        // 주별 활동 횟수
+        // 주별 활동 횟수 조회 및 변환
         List<Object[]> weeklyHabitCountsData = habitHistoryRepository.getWeeklyHabitCounts(memberId, year, month);
         List<HabitReportResponseDto.WeeklyData> weeklyHabitCounts = weeklyHabitCountsData.stream()
                 .map(data -> new HabitReportResponseDto.WeeklyData(
                         ((Number) data[0]).intValue(), // 주차
                         ((Number) data[1]).longValue(), // 습관 ID
-                        ((Number) data[2]).longValue() // 활동 횟수
+                        ((BigDecimal) data[2]).longValue() // 활동 횟수 (BigDecimal → Long 변환)
                 ))
                 .collect(Collectors.toList());
+
+// 주별 활동 시간 조회 및 변환
+        List<Object[]> weeklyActiveTimeData = habitHistoryRepository.getWeeklyActiveTime(memberId, year, month);
+        List<HabitReportResponseDto.WeeklyData> weeklyActiveTime = weeklyActiveTimeData.stream()
+                .map(data -> new HabitReportResponseDto.WeeklyData(
+                        ((Number) data[0]).intValue(), // 주차
+                        ((Number) data[1]).longValue(), // 습관 ID
+                        ((BigDecimal) data[2]).longValue() // 활동 시간 (BigDecimal → Long 변환)
+                ))
+                .collect(Collectors.toList());
+
 
         return new HabitReportResponseDto(recordPercentage, achievementGrowth, topHabit, weeklyAchievementRates, weeklyActiveTime,weeklyHabitCounts);
     }
