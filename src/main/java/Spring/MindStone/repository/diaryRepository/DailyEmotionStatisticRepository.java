@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DailyEmotionStatisticRepository extends JpaRepository<DailyEmotionStatistic, Long> {
-    Optional<Object> findByDateAndMemberInfo(LocalDate date, MemberInfo memberInfo);
+    Optional<DailyEmotionStatistic> findFirstByDateAndMemberInfo(LocalDate date, MemberInfo memberInfo);
+
+
 
     @Query("SELECT hh FROM DailyEmotionStatistic hh " +
             "WHERE hh.memberInfo.id = :memberId " +

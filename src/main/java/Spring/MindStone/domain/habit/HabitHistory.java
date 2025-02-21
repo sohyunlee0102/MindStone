@@ -11,6 +11,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,9 @@ public class HabitHistory extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = true, length = 20)
     private HabitColor habitHistoryColor; // 습관 기록 별 색깔
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     @OneToMany(mappedBy = "habitHistory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HabitExecution> executions = new ArrayList<>();

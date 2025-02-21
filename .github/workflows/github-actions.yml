@@ -16,7 +16,7 @@ permissions:
 # 실제 실행될 내용들을 정의합니다.
 jobs:
   build:
-    runs-on: ubuntu-latest  # ubuntu 최신 버전에서 script를 실행
+    runs-on: self-hosted  # ubuntu 최신 버전에서 script를 실행
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop' || github.event_name == 'push' && github.ref == 'refs/heads/develop' && github.event.head_commit.message != 'Merge pull request'
     # develop 브랜치로의 pull request가 merge 되었을 때 github actions 작동
     # 또는 develop 브랜치에 push가 발생하면 github actions 작동 (pr merge시 actions가 2번 발생하는 문제를 해결하기 위해 merge가 아닌 push때만 실행되도록 함)

@@ -71,6 +71,8 @@ public class HabitRequestDto {
 
         @NotBlank
         String comment;
+        @NotNull
+        LocalDate date;
         LocalDateTime startTime;
         LocalDateTime endTime;
         HabitColor habitColor;

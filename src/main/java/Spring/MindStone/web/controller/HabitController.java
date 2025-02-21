@@ -100,7 +100,8 @@ public class HabitController {
     @Operation(summary = "습관 실행 시간 추가 API", description = "특정 날짜의 습관 실행 시간을 추가하는 API 입니다.")
     public ApiResponse<Long> addHabitExecution(@Valid @RequestBody HabitRequestDto.CreateHabitExecutionDto request,
                                                @RequestHeader("Authorization") String authorization) {
-        return ApiResponse.onSuccess(habitHistoryService.addHabitExecution(request));
+        Long memberId = JwtTokenUtil.extractMemberId(authorization);
+        return ApiResponse.onSuccess(habitHistoryService.addHabitExecution(memberId, request));
     }
 
     @PatchMapping("/habitHistory")

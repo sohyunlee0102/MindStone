@@ -1,6 +1,7 @@
 package Spring.MindStone.repository.emotionNoteRepository;
 
 import Spring.MindStone.domain.emotion.EmotionNote;
+import Spring.MindStone.domain.enums.EmotionList;
 import Spring.MindStone.domain.member.MemberInfo;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,15 @@ public interface EmotionNoteRepository extends JpaRepository<EmotionNote, Long> 
             @Param("endOfDay") LocalDateTime endOfDay,
             Sort sort
     );
+
+    @Query("SELECT COUNT(hh) FROM EmotionNote hh " +
+            "WHERE hh.memberInfo.id = :memberId " +
+            "AND YEAR(hh.createdAt) = :year " +
+            "AND MONTH(hh.createdAt) = :month " +
+            "AND hh.emotion IN (:emotions)")
+    int countNegativeEmotionNoteByMonth(@Param("memberId") Long memberId,
+                                        @Param("year") int year,
+                                        @Param("month") int month,
+                                        @Param("emotions") List<EmotionList> emotions);
+
 }
