@@ -31,6 +31,8 @@ public class DummyService {
                 .sadFigure(request.getSadFigure())
                 .thrillFigure(request.getThrillFigure())
                 .happinessFigure(request.getHappinessFigure())
+                .actionRecommandCount(10)
+                .diaryAutoCreationCount(10)
                 .build();
 
         dailyEmotionStatisticRepository.save(dailyEmotionStatistic);
