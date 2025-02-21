@@ -23,10 +23,9 @@ public class  DailyEmotionStatisticService {
     private final MemberInfoService memberInfoService;
 
 
-    public DailyEmotionStatistic saveStatistics(MemberInfo memberInfo, EmotionList emotion, int figure) {
-        LocalDate today = Instant.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDate();
-        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(today,memberInfo)
-                .orElseGet(() -> new DailyEmotionStatistic(memberInfo, today)); // 없으면 생성
+    public DailyEmotionStatistic saveStatistics(MemberInfo memberInfo,LocalDate localDate , EmotionList emotion, int figure) {
+        DailyEmotionStatistic statistics = dailyEmotionStatisticRepository.findFirstByDateAndMemberInfo(localDate,memberInfo)
+                .orElseGet(() -> new DailyEmotionStatistic(memberInfo, localDate)); // 없으면 생성
 
 
         //여기서 감정들에 추가되는 수치만큼 더해줌.
