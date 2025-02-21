@@ -56,8 +56,8 @@ public class HabitHistoryService {
 
         return habitHistories.stream()
                 .map(habitHistory -> new HabitResponseDto.HabitHistoryWithExecutionDTO(
-                        habitHistory.getId(),
                         habitHistory.getHabit().getId(),
+                        habitHistory.getId(),
                         habitHistory.getComment(),
                         habitHistory.getHabitHistoryColor(),
                         habitHistory.getExecutions().stream().map(execution -> new HabitResponseDto.HabitExecutionDTO(
