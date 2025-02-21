@@ -1,5 +1,6 @@
 package Spring.MindStone.web.controller;
 
+import Spring.MindStone.apiPayload.ApiResponse;
 import Spring.MindStone.service.habitService.HabitCalendarService;
 import Spring.MindStone.web.dto.habitCalendarDto.HabitCalendarResponseDto;
 import Spring.MindStone.config.jwt.JwtTokenUtil;
@@ -20,12 +21,12 @@ public class HabitCalendarController {
 
     @Operation(summary = "습관 달력 조회 API", description = "사용자의 특정 년/월 습관 기록 데이터를 조회합니다.")
     @GetMapping
-    public ResponseEntity<HabitCalendarResponseDto> getCalendarData(
+    public ApiResponse<HabitCalendarResponseDto> getCalendarData(
             @RequestHeader("Authorization") String authorization,
             @RequestParam int year,
             @RequestParam int month) {
 
         Long memberId = JwtTokenUtil.extractMemberId(authorization);
-        return ResponseEntity.ok(habitCalendarService.getCalendarData(memberId, year, month));
+        return ApiResponse.onSuccess(habitCalendarService.getCalendarData(memberId, year, month));
     }
 }
