@@ -83,6 +83,13 @@ A service designed to help users manage their emotions and habits by growing a s
 
 5. **Security Practices**  
    Strengthened my ability to design secure systems by using Spring Security for role-based access control, token management, and CORS configuration.
+
+## 🚀 Technology Stack
+
+- **Used Stacks**: Spring Boot, Spring Security, Spring Data JPA, MySQL
+- **Used Tools**: Git, InteliJ, EC2, RDS, Figma, Github Actions
+- **Used Collaborations**: Notion, Github, Discord
+- **Front-End**: React.js, HTML5, CSS3
    
 ## Implementaion Image
 
