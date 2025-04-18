@@ -1,4 +1,4 @@
-# MindStone Backend
+# MindStone Backend (develop branch)
 ![image](https://github.com/user-attachments/assets/4be5e5a9-5be9-4469-90c4-20b8b968d79d)
 
 ### 🧠 Mental Care Service with Your Own Stone
@@ -87,9 +87,8 @@ A service designed to help users manage their emotions and habits by growing a s
 ## 🚀 Technology Stack
 
 - **Used Stacks**: Spring Boot, Spring Security, Spring Data JPA, MySQL
-- **Used Tools**: Git, InteliJ, EC2, RDS, Figma, Github Actions
+- **Used Tools**: Git, IntelliJ, EC2, RDS, Figma, Github Actions
 - **Used Collaborations**: Notion, Github, Discord
-- **Front-End**: React.js, HTML5, CSS3
    
 ## Implementaion Image
 
