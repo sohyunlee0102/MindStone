@@ -90,7 +90,7 @@ A service designed to help users manage their emotions and habits by growing a s
 - **Used Tools**: Git, IntelliJ, EC2, RDS, Figma, Github Actions
 - **Used Collaborations**: Notion, Github, Discord
    
-## Implementaion Image
+## Implementaion Images
 
 ![image](https://github.com/user-attachments/assets/88b8632f-a20c-4735-9159-92576ecc49f0)
 ![image](https://github.com/user-attachments/assets/13b0de6f-ff28-4390-b565-8c5698afdcfd)
